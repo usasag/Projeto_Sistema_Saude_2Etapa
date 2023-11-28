@@ -1,0 +1,60 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-Debug-d0094a50bb2071803777.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.26"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "Projeto_Sistema_Saude_2Etapa",
+					"targetIndexes" : 
+					[
+						0
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "Projeto_Sistema_Saude_2Etapa::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Projeto_Sistema_Saude_2Etapa-Debug-9ee7ef2ea6b06bd39f6e.json",
+					"name" : "Projeto_Sistema_Saude_2Etapa",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "C:/Users/jorge/CLionProjects/Projeto_Sistema_Saude_2Etapa/cmake-build-debug",
+		"source" : "C:/Users/jorge/CLionProjects/Projeto_Sistema_Saude_2Etapa"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 5
+	}
+}

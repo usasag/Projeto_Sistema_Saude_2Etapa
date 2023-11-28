@@ -1,0 +1,3 @@
+C:/Users/jorge/CLionProjects/Projeto_Sistema_Saude_2Etapa/cmake-build-debug/CMakeFiles/Projeto_Sistema_Saude_2Etapa.dir
+C:/Users/jorge/CLionProjects/Projeto_Sistema_Saude_2Etapa/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/jorge/CLionProjects/Projeto_Sistema_Saude_2Etapa/cmake-build-debug/CMakeFiles/rebuild_cache.dir
