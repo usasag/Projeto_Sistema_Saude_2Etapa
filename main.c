@@ -1,51 +1,20 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-
-enum BloodType {
-    A, B, AB, O
-};
-
-enum RHFactor {
-    Positive, Negative
-};
-
-enum AppStatus {
-    Scheduled, InProgress, Waiting, Completed
-};
-
-
-typedef struct {
-    int code;
-    char name[100];
-    char RG[20];
-    char CPF[15];
-    enum BloodType bloodType;
-    enum RHFactor rhFactor;
-    char address[200];
-    char dob[11];
-} Patient;
+#include "pacient.h"
 
 typedef struct {
     int code;
     int patientCode;
     enum { App, ReturnApp } appType;
     char date[11];
-    enum AppStatus status;
+    enum { Complete, Waiting, Scheduled, In_processing } status ;
     float price;
 } Appointment;
-
-void addPatient(Patient **patients, int *numPatients);
-void removePatient(Patient **patients, int *numPatients);
-void editPatient(Patient *patients, int numPatients);
-void printPatient(const Patient *patient); // Incompleta, ainda vou ver como faço
 
 void addAppointment(Appointment **appointments, int *numAppointments, const Patient *patients, int numPatients);
 void removeAppointment(Appointment **appointments, int *numAppointments);
 void editAppointment(Appointment *appointments, int numAppointments);
-void printAppointment(const Appointment *appointment); // Incompleta, ainda vou ver como faço
+void printAppointment(const Appointment *appointment);
 
-int generatePatientCode(const Patient *patients, int numPatients);
+
 int generateAppointmentCode(const Appointment *appointments, int numAppointments);
 
 int main()
@@ -78,7 +47,7 @@ int main()
         printf("15. Listar Soma dos Atendimentos Pagos por Periodo\n");
         printf("16. Listar Todos os Atendimentos por Ordem de Data Decrescente\n");
         printf("--------------------------------------------\n");
-        printf("0. Sair\n");
+        printf("0. Salvar e sair\n");
         printf("--------------------------------------------\n");
 
         int choice;
@@ -86,6 +55,10 @@ int main()
         scanf("%d \n", &choice);
 
         switch (choice) {
+            case 0:
+                // Salvar e sair
+                printf("Salvando informacoes em arquivo e saindo...\n");
+                return 0;
             case 1:
                addPatient(&patients,&numPatients);
                 break;
@@ -96,19 +69,19 @@ int main()
                 editPatient(patients, numPatients);
                 break;
             case 4:
-                // Mostrar as informaçoes do paciente
+                printOnePatientInfo(patients, numPatients);
                 break;
             case 5:
-                // Exibir lista de pacientes com informações;
+                listAllPatientsInfo(patients, numPatients);
                 break;
             case 6:
-                // Exibir consultas por data;
+                // Exibir pacientes que tem consultas em uma data especificada;
                 break;
             case 7:
-                // Mostrar pacientes por tipo sanguineo;
+                showAllPatientsWithSameBloodType(patients, numPatients);
                 break;
             case 8:
-                // Mostrar pacientes ordenados alfabeticamente;
+                showAllPatientsSortedByName(patients, numPatients);
                 break;
             case 9:
                 addAppointment(&appointments, &numAppointments, patients, numPatients);
@@ -135,32 +108,13 @@ int main()
                 // Mostrar todos os atendimentos por data decrescente;
                 break;
             default:
-                exit(0);
+                printf("Opcao invalida.\n");
         }
         free(patients);
         free(appointments);
 
         return 0;
     }
-}
-// Função para adicionar paciente
-void addPatient(Patient **patients, int *numPatients) {
-    // Alocar memória para novo paciente
-    *patients = realloc(*patients, (*numPatients + 1) * sizeof(Patient));
-
-    // Acessar o ultimo elemento no array para colocar o novo paciente
-    Patient *newPatient = &(*patients)[*numPatients];
-
-    // TODO: Pegar a informação nova do usuário
-
-    // Setar o código do paciente automaticamente
-    // TODO: Alguma lógica pra esse código.
-    newPatient->code = generatePatientCode(*patients, *numPatients);
-
-    (*numPatients)++;
-
-    // Confirmação que adicionou e o código
-    printf("Paciente adicionado com sucesso.\n Codigo do paciente: %d\n", newPatient->code);
 }
 
 // Função para editar as infos do paciente
@@ -270,11 +224,6 @@ void printAppointment(const Appointment *appointment) {
     // ...
 }
 
-// Função para gerar código único para paciente
-int generatePatientCode(const Patient *patients, int numPatients) {
-    // TODO: Gerar um código que não exista ainda (comparar pra ver se existe)
-    // ...
-}
 
 // Função para gerar código único para atendimento
 int generateAppointmentCode(const Appointment *appointments, int numAppointments) {

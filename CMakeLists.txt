@@ -4,4 +4,7 @@ project(Projeto_Sistema_Saude_2Etapa C)
 set(CMAKE_C_STANDARD 11)
 
 add_executable(Projeto_Sistema_Saude_2Etapa
-        main.c)
+        main.c
+        protos.h
+        ../../Downloads/funcoes.h
+        ../../Downloads/funcoes.h)
