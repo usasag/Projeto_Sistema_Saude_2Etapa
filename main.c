@@ -1,21 +1,6 @@
-#include "pacient.h"
+// Created by: Vitor Bispo
 
-typedef struct {
-    int code;
-    int patientCode;
-    enum { App, ReturnApp } appType;
-    char date[11];
-    enum { Complete, Waiting, Scheduled, In_processing } status ;
-    float price;
-} Appointment;
-
-void addAppointment(Appointment **appointments, int *numAppointments, const Patient *patients, int numPatients);
-void removeAppointment(Appointment **appointments, int *numAppointments);
-void editAppointment(Appointment *appointments, int numAppointments);
-void printAppointment(const Appointment *appointment);
-
-
-int generateAppointmentCode(const Appointment *appointments, int numAppointments);
+#include "atendimento.h"
 
 int main()
 {
@@ -24,6 +9,9 @@ int main()
 
     Appointment *appointments = NULL;
     int numAppointments = 0;
+
+    buildPatientListsFromFile(&patients, &numPatients);
+    buildAppointmentListsFromFile(&appointments, &numAppointments);
 
     while (1) {
         printf("--------------------------------------------\n");
@@ -41,7 +29,7 @@ int main()
         printf("\n9. Adicionar Atendimento\n");
         printf("10. Remover Atendimento\n");
         printf("11. Editar Atendimentos\n");
-        printf("12. Exibir Atendimentos\n");
+        printf("12. Exibir Atendimentos de um paciente\n");
         printf("13. Listar Soma dos Atendimentos Pagos por Paciente\n");
         printf("14. Listar Soma dos Atendimentos Pagos em um Dia\n");
         printf("15. Listar Soma dos Atendimentos Pagos por Periodo\n");
@@ -56,9 +44,9 @@ int main()
 
         switch (choice) {
             case 0:
-                // Salvar e sair
+                writeInfoInFile(patients, numPatients);
                 printf("Salvando informacoes em arquivo e saindo...\n");
-                return 0;
+                exit(0);
             case 1:
                addPatient(&patients,&numPatients);
                 break;
@@ -75,7 +63,7 @@ int main()
                 listAllPatientsInfo(patients, numPatients);
                 break;
             case 6:
-                // Exibir pacientes que tem consultas em uma data especificada;
+                showPatientsWithAppointmentsInADay(patients, numPatients, appointments, numAppointments);
                 break;
             case 7:
                 showAllPatientsWithSameBloodType(patients, numPatients);
@@ -93,19 +81,19 @@ int main()
                 editAppointment(appointments, numAppointments);
                 break;
             case 12:
-                // Exibir atendimentos;
+                showAppointmentsForAPatient(appointments, numAppointments);
                 break;
             case 13:
-                // Mostrar a soma dos valores das consultas por paciente;
+                showSumOfAppointmentPricesOfPatient(appointments, numAppointments);
                 break;
             case 14:
-                // Mostrar a soma dos valores das consultas numa data;
+                showSumOfAppointmentPricesInADay(appointments, numAppointments);
                 break;
             case 15:
-                // Mostrar a soma dos valores das consultas em um periodo especifico;
+                showSumOfAppointmentPricesInAPeriod(appointments, numAppointments);
                 break;
             case 16:
-                // Mostrar todos os atendimentos por data decrescente;
+                showAllAppointmentsSortedByDecrescentDate(appointments, numAppointments);
                 break;
             default:
                 printf("Opcao invalida.\n");
@@ -115,70 +103,6 @@ int main()
 
         return 0;
     }
-}
-
-// Função para editar as infos do paciente
-void editPatient(Patient *patients, int numPatients) {
-    // TODO: Pegar o código do paciente a ser editado
-    // ...
-
-    // TODO: Achar o paciente na array de structs (pelo código)
-    // ...
-
-    // TODO: Pedir as informações novas do usuário
-    // TODO: Menu com as informações editáveis no mesmo estilo da função "addPatient"
-    // ...
-
-    // Print confirmando
-    printf("Informacao do paciente editada com sucesso.\n");
-}
-
-// Função para remover paciente
-void removePatient(Patient **patients, int *numPatients) {
-    // TODO Pegar o código do paciente a ser removido
-    // ...
-
-    // TODO Achar o paciente na array (pelo código)
-    // ...
-
-    // TODO Remover o paciente (deslocar elementos na array)
-    // ...
-
-    // Redimensionar a array
-    *patients = realloc(*patients, (*numPatients - 1) * sizeof(Patient));
-
-    // Decrementar o número de pacientes
-    (*numPatients)--;
-
-    // Print confirmando
-    printf("Paciente removido com sucesso.\n");
-}
-
-// Função para mostrar informações do paciente
-void printPatient(const Patient *patient) {
-    // TODO Mostrar informações do paciente
-    // ...
-}
-
-// Função para adicionar atendimento
-void addAppointment(Appointment **appointments, int *numAppointments, const Patient *patients, int numPatients) {
-    // Alocar memória para novo atendimento
-    *appointments = realloc(*appointments, (*numAppointments + 1) * sizeof(Appointment));
-
-    // Acessar o ultimo elemento no array para colocar o novo atendimento
-    Appointment *newAppointment = &(*appointments)[*numAppointments];
-
-    // TODO Pegar informações do atendimento do usuário
-    // ...
-
-    // Setar o código do atendimento automaticamente TODO Criar uma lógica pra esse código
-    newAppointment->code = generateAppointmentCode(*appointments, *numAppointments);
-
-    // Incrementar o número de atendimentos total
-    (*numAppointments)++;
-
-    // Print confirmando e o código do atendimento
-    printf("Atendimento adicionado com sucesso.\n Codigo do atendimento: %d\n", newAppointment->code);
 }
 
 // Função para editar atendimentos

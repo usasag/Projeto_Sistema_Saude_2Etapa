@@ -6,13 +6,18 @@
 void getRequiredInput(char *input, const char *fieldName, int maxLength);
 void addPatient(Patient **patients, int *numPatients);
 void removePatient(Patient **patients, int *numPatients);
-void editPatient(Patient *patients, int numPatients);
+void showAllPatientsWithSameBloodType(Patient *patients, int numPatients);
+void showAllPatientsSortedByName(Patient *patients, int numPatients);
+void bubbleSort(Patient *patients, int numPatients);
+void showPatientsWithAppointmentsInADay(Patient *patients, int numPatients, Appointment *appointments, int numAppointments);
+void editPatientInfo(Patient *patients, int numPatients);
 void listAllPatientsInfo(Patient *patients, int numPatients);
 void printOnePatientInfo(Patient *patients, int numPatients);
 
+
 void clearBuffer();
 int generatePatientCode(int code, Patient *patients, int numPatients);
-
+int findPatient(const Patient *patients, int numPatients, int code);
 
 
 void clearBuffer() {
@@ -31,25 +36,6 @@ void getRequiredInput(char *input, const char *fieldName, int maxLength) {
             }
         } while (strlen(input) == 0 || strlen(input) >= maxLength);
     }
-
-
-void fromDiskToList(Patient **patients, int *numPatients) {
-    checkIfFileExists();
-    fread(numPatients, sizeof(int), 1, "patients.bin");
-}
-
-void getRequiredInput(char *input, const char *fieldName, int maxLength) {
-    do {
-        limparBuffer();
-        printf("Informe %s: ", fieldName);
-        scanf("%s", input);
-
-        if (strlen(input) == 0 || strlen(input) >= maxLength) {
-            printf("Esta informacao e obrigatoria, por favor informe %s.\n", fieldName);
-        }
-    } while (strlen(input) == 0);
-    clearBuffer();
-}
 
 void addPatient(Patient **patients, int *numPatients) {
     // Alocar memória para novo paciente
@@ -131,6 +117,15 @@ void addPatient(Patient **patients, int *numPatients) {
     printf("Paciente adicionado com sucesso.\n Codigo do paciente: %d\n", newPatient->code);
 }
 
+int findPatient(const Patient *patients, int numPatients, int code) {
+    for (int i = 0; i < numPatients; i++) {
+        if (patients[i].code == code) {
+            return i;
+        }
+    }
+    return -1;
+}
+
 void removePatient(Patient **patients, int *numPatients) {
     // Pegar o código do paciente
     int code;
@@ -138,14 +133,8 @@ void removePatient(Patient **patients, int *numPatients) {
     scanf("%d", &code);
 
     // Procurar o paciente pelo código
-    int index = -1;
-    for (int i = 0; i < *numPatients; i++) {
-        if ((*patients)[i].code == code) {
-            index = i;
-            break;
-        }
-    }
-
+    int index = findPatient(*patients, *numPatients, code);
+   
     // Se não encontrar, mostrar mensagem de erro e retornar
     if (index == -1) {
         printf("Paciente nao encontrado.\n");
@@ -172,13 +161,7 @@ void editPatientInfo(Patient *patients, int numPatients) {
     scanf("%d", &code);
 
     // Procurar o paciente pelo código
-    int index = -1;
-    for (int i = 0; i < numPatients; i++) {
-        if (patients[i].code == code) {
-            index = i;
-            break;
-        }
-    }
+    int index = findPatient(patients, numPatients, code);
 
     // Se não encontrar, mostrar mensagem de erro e retornar
     if (index == -1) {
@@ -295,13 +278,7 @@ void printOnePatientInfo(Patient *patients, int numPatients) {
     scanf("%d", &code);
 
     // Procurar o paciente pelo código
-    int index = -1;
-    for (int i = 0; i < numPatients; i++) {
-        if (patients[i].code == code) {
-            index = i;
-            break;
-        }
-    }
+    int index = findPatient(patients, numPatients, code);
 
     // Se não encontrar, mostrar mensagem de erro e retornar
     if (index == -1) {
@@ -360,4 +337,24 @@ void bubbleSort(Patient *patients, int numPatients) {
 void showAllPatientsSortedByName(Patient *patients, int numPatients) {
     bubbleSort(patients, numPatients);
     listAllPatientsInfo(patients, numPatients);
+}
+
+void showPatientsWithAppointmentsInADay(Patient *patients, int numPatients, Appointment *appointments, int numAppointments) {
+    // Pegar a data
+    char date[11];
+    getRequiredInput(date, "data (dd/mm/aaaa)", 11);
+
+    // Mostrar todos os pacientes com consultas na data informada
+    for (int i = 0; i < numAppointments; i++) {
+        if (compareDates(appointments[i].date, date) == 0) {
+            int patientIndex = findPatient(patients, numPatients, appointments[i].patientCode);
+            if (patientIndex != -1) {
+                printf("Codigo: %d\n", patients[patientIndex].code);
+                printf("Nome: %s\n", patients[patientIndex].name);
+                printf("Data: %s\n", appointments[i].date);
+                printf("Preco: %.2f\n", appointments[i].price);
+                printf("\n-----------------\n"); // Divisor
+            }
+        }
+    }
 }

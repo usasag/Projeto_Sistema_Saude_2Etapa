@@ -25,6 +25,22 @@ typedef struct {
     char dob[11];
 } Patient;
 
+enum Status {
+    Agendado, Atendendo, Finalizado, Cancelado
+};
+
+enum AppointmentType {
+    Consulta, Retorno
+};
+
+typedef struct {
+    int code;
+    int patientCode;
+    enum AppointmentType appointmentType;
+    char date[11];
+    enum Status status;
+    float price;
+} Appointment;
 
 void checkIfFileWasCreated() {
     FILE *file = fopen("patients.bin", "rb");
@@ -32,35 +48,6 @@ void checkIfFileWasCreated() {
         printf("Arquivo nao foi criado, memoria cheia.\n");
         exit(1);
     }
-}
-
-void buildList(Patient **patients, int *numPatients) {
-    // Abrir o arquivo
-    FILE *file = fopen("patients.bin", "rb");
-    if (file == NULL) {
-        printf("Erro ao abrir o arquivo.\n");
-        return;
-    }
-
-    // Ler o número de pacientes
-    fread(numPatients, sizeof(int), 1, file);
-
-    // Alocar memória para a lista de pacientes
-    *patients = malloc((*numPatients) * sizeof(Patient));
-
-    // Ler os pacientes do arquivo
-    fread(*patients, sizeof(Patient), *numPatients, file);
-
-    // Fechar o arquivo
-    fclose(file);
-}
-
-void destroyList(Patient **patients, int *numPatients) {
-    // Liberar memória da lista de pacientes
-    free(*patients);
-
-    // Resetar o número de pacientes
-    *numPatients = 0;
 }
 
 void fromListToDisk(Patient *patients, int numPatients) {
@@ -72,6 +59,13 @@ void fromListToDisk(Patient *patients, int numPatients) {
     }
 }
     
+
+void fromDiskToList(Patient **patients, int *numPatients) {
+    checkIfFileExists();
+    FILE *patientsFile = fopen("patients.bin", "rb");
+    fread(numPatients, sizeof(int), 1, patientsFile);
+}
+
 void checkIfFileExists() {
         FILE *patientsFile = fopen("patients.bin", "rb");
         if (patientsFile == NULL) {
@@ -132,6 +126,48 @@ void readInfoFromFile(Patient *patients, int numPatients) {
         fscanf(patientsFile, "%s", patients[i].dob);
     }
     fclose(patientsFile);
+}
+
+void buildPatientListsFromFile(Patient **patients, int *numPatients) {
+    checkIfFileExists();
+    FILE *patientsFile = fopen("patients.bin", "rb");
+    if (patientsFile == NULL) {
+        printf("Erro ao abrir o arquivo.\n");
+        return;
+    }
+    fread(numPatients, sizeof(int), 1, patientsFile);
+    *patients = (Patient *) malloc(*numPatients * sizeof(Patient));
+    for (int i = 0; i < *numPatients; i++) {
+        fscanf(patientsFile, "%d", &(*patients)[i].code);
+        fscanf(patientsFile, "%s", (*patients)[i].name);
+        fscanf(patientsFile, "%s", (*patients)[i].RG);
+        fscanf(patientsFile, "%s", (*patients)[i].CPF);
+        fscanf(patientsFile, "%d", &(*patients)[i].bloodType);
+        fscanf(patientsFile, "%d", &(*patients)[i].rhFactor);
+        fscanf(patientsFile, "%s", (*patients)[i].address);
+        fscanf(patientsFile, "%s", (*patients)[i].dob);
+    }
+    fclose(patientsFile);
+}
+
+void buildAppointmentListsFromFile(Appointment **appointments, int *numAppointments) {
+    checkIfFileExists();
+    FILE *appointmentsFile = fopen("appointments.bin", "rb");
+    if (appointmentsFile == NULL) {
+        printf("Erro ao abrir o arquivo.\n");
+        return;
+    }
+    fread(numAppointments, sizeof(int), 1, appointmentsFile);
+    *appointments = (Appointment *) malloc(*numAppointments * sizeof(Appointment));
+    for (int i = 0; i < *numAppointments; i++) {
+        fscanf(appointmentsFile, "%d", &(*appointments)[i].code);
+        fscanf(appointmentsFile, "%d", &(*appointments)[i].patientCode);
+        fscanf(appointmentsFile, "%d", &(*appointments)[i].appointmentType);
+        fscanf(appointmentsFile, "%s", (*appointments)[i].date);
+        fscanf(appointmentsFile, "%d", &(*appointments)[i].status);
+        fscanf(appointmentsFile, "%f", &(*appointments)[i].price);
+    }
+    fclose(appointmentsFile);
 }
 
 #endif // FILE_LIST_FUNCTIONS_H
