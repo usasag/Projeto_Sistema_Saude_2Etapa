@@ -92,8 +92,6 @@ void addAppointment(Appointment **appointments, int *numAppointments, const Pati
     }
     } while (appointment.appointmentType != Consulta && appointment.appointmentType != Retorno);
     
-
-    int day, month, year;
     do {
         printf("Digite a data da consulta (dd/mm/aaaa): ");
         scanf("%s", appointment.date);
@@ -186,14 +184,6 @@ void editAppointment(Appointment *appointments, int numAppointments) {
     printf("Atendimento editado com sucesso!\n");
 }
 
-void listAllAppointments(const Appointment *appointments, int numAppointments) {
-    checkIfAppointmentsExist(numAppointments);
-    printf("Codigo\tCodigo do Paciente\tTipo de Consulta\tData\tStatus\tPreco\n");
-    for (int i = 0; i < numAppointments; i++) {
-        printf("%d\t%d\t%d\t%s\t%d\t%.2f\n", appointments[i].code, appointments[i].patientCode, appointments[i].appointmentType, appointments[i].date, appointments[i].status, appointments[i].price);
-    }
-}
-
 void showAppointmentsForAPatient(const Appointment *appointments, int numAppointments) {
     checkIfAppointmentsExist(numAppointments);
     int patientCode;
@@ -203,20 +193,6 @@ void showAppointmentsForAPatient(const Appointment *appointments, int numAppoint
     printf("Codigo\tCodigo do Paciente\tTipo de Consulta\tData\tStatus\tPreco\n");
     for (int i = 0; i < numAppointments; i++) {
         if (appointments[i].patientCode == patientCode) {
-            printf("%d\t%d\t%d\t%s\t%d\t%.2f\n", appointments[i].code, appointments[i].patientCode, appointments[i].appointmentType, appointments[i].date, appointments[i].status, appointments[i].price);
-        }
-    }
-}
-
-void showAppointmentsInADay(const Appointment *appointments, int numAppointments) {
-    checkIfAppointmentsExist(numAppointments);
-    char date[11];
-    printf("Digite a data: ");
-    scanf("%s", date);
-
-    printf("Codigo\tCodigo do Paciente\tTipo de Consulta\tData\tStatus\tPreco\n");
-    for (int i = 0; i < numAppointments; i++) {
-        if (strcmp(appointments[i].date, date) == 0) {
             printf("%d\t%d\t%d\t%s\t%d\t%.2f\n", appointments[i].code, appointments[i].patientCode, appointments[i].appointmentType, appointments[i].date, appointments[i].status, appointments[i].price);
         }
     }
