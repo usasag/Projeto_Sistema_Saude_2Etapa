@@ -134,8 +134,13 @@ void addPatient(Patient **patients, int *numPatients) {
         printf("Informe o endereço do paciente: ");
         scanf("%s", newPatient->address);
     do {
-        getRequiredInput(newPatient->dob, "data de nascimento do paciente (dd/mm/aaaa)*", 11);
-    } while(isValidDate(newPatient->dob));
+                    getRequiredInput(newPatient->dob, "data de nascimento do paciente (dd/mm/aaaa)*", 11);
+                    if (!isValidDate(newPatient->dob)) {
+                        printf("Data invalida! Por favor digite uma data valida!\n"
+                               "Formato: (dd/mm/aaaa)\n"
+                               "Exemplo: 01/01/2000\n");
+                    }
+                } while(!isValidDate(newPatient->dob));
 
     newPatient->code = generatePatientCode(newPatient, *numPatients);
 
@@ -279,7 +284,14 @@ void editPatientInfo(Patient *patients, int numPatients) {
                 }
                 break;
             case 7:
-                getRequiredInput(patients[index].dob, "data de nascimento do paciente (dd/mm/aaaa)", 11);
+                do {
+                    getRequiredInput(patients[index].dob, "data de nascimento do paciente (dd/mm/aaaa)*", 11);
+                    if (!isValidDate(patients[index].dob)) {
+                        printf("Data invalida! Por favor digite uma data valida!\n"
+                               "Formato: (dd/mm/aaaa)\n"
+                               "Exemplo: 01/01/2000\n");
+                    }
+                } while(!isValidDate(patients[index].dob));
                 break;
             default:
                 printf("Saindo...\n");
