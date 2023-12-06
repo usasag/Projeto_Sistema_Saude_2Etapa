@@ -7,10 +7,8 @@
 void addAppointment(Appointment **appointments, int *numAppointments, const Patient *patients, int numPatients);
 void removeAppointment(Appointment **appointments, int *numAppointments);
 void editAppointment(Appointment *appointments, int numAppointments);
-void listAllAppointments(const Appointment *appointments, int numAppointments);
 
 void showAppointmentsForAPatient(const Appointment *appointments, int numAppointments);
-void showAppointmentsInADay(const Appointment *appointments, int numAppointments);
 void showSumOfAppointmentPricesInADay(const Appointment *appointments, int numAppointments);
 void showSumOfAppointmentPricesInAPeriod(const Appointment *appointments, int numAppointments);
 void showSumOfAppointmentPricesOfPatient(const Appointment *appointments, int numAppointments);
@@ -19,9 +17,9 @@ void showAllAppointmentsSortedByDecrescentDate(const Appointment *appointments, 
 int generateAppointmentCode(const Appointment *appointments, int numAppointments);
 int findAppointment(const Appointment *appointments, int numAppointments, int code);
 bool isValidDate(const char* date);
-void checkIfAppointmentsExist(const Appointment *appointments, int numAppointments);
+void checkIfAppointmentsExist(int numAppointments);
 
-void checkIfAppointmentsExist(const Appointment *appointments, int numAppointments) {
+void checkIfAppointmentsExist(int numAppointments) {
     if (numAppointments == 0) {
         printf("Nao ha consultas agendadas! Adicione uma consulta e tente novamente.\n");
         exit(1);
@@ -118,6 +116,7 @@ void addAppointment(Appointment **appointments, int *numAppointments, const Pati
 }
 
 int findAppointment(const Appointment *appointments, int numAppointments, int code) {
+    checkIfAppointmentsExist(numAppointments);
     for (int i = 0; i < numAppointments; i++) {
         if (appointments[i].code == code) {
             return i;
@@ -127,6 +126,7 @@ int findAppointment(const Appointment *appointments, int numAppointments, int co
 }
 
 void removeAppointment(Appointment **appointments, int *numAppointments) {
+    checkIfAppointmentsExist(*numAppointments);
     int code;
     printf("Digite o codigo do atendimento: ");
     scanf("%d", &code);
@@ -144,6 +144,7 @@ void removeAppointment(Appointment **appointments, int *numAppointments) {
 }
 
 void editAppointment(Appointment *appointments, int numAppointments) {
+    checkIfAppointmentsExist(numAppointments);
     int code;
     printf("Digite o codigo do atendimento: ");
     scanf("%d", &code);
@@ -186,6 +187,7 @@ void editAppointment(Appointment *appointments, int numAppointments) {
 }
 
 void listAllAppointments(const Appointment *appointments, int numAppointments) {
+    checkIfAppointmentsExist(numAppointments);
     printf("Codigo\tCodigo do Paciente\tTipo de Consulta\tData\tStatus\tPreco\n");
     for (int i = 0; i < numAppointments; i++) {
         printf("%d\t%d\t%d\t%s\t%d\t%.2f\n", appointments[i].code, appointments[i].patientCode, appointments[i].appointmentType, appointments[i].date, appointments[i].status, appointments[i].price);
@@ -193,6 +195,7 @@ void listAllAppointments(const Appointment *appointments, int numAppointments) {
 }
 
 void showAppointmentsForAPatient(const Appointment *appointments, int numAppointments) {
+    checkIfAppointmentsExist(numAppointments);
     int patientCode;
     printf("Digite o codigo do paciente: ");
     scanf("%d", &patientCode);
@@ -206,6 +209,7 @@ void showAppointmentsForAPatient(const Appointment *appointments, int numAppoint
 }
 
 void showAppointmentsInADay(const Appointment *appointments, int numAppointments) {
+    checkIfAppointmentsExist(numAppointments);
     char date[11];
     printf("Digite a data: ");
     scanf("%s", date);
@@ -219,6 +223,7 @@ void showAppointmentsInADay(const Appointment *appointments, int numAppointments
 }
 
 void showSumOfAppointmentPricesInAPeriod(const Appointment *appointments, int numAppointments) {
+    checkIfAppointmentsExist(numAppointments);
     char startDate[11], endDate[11];
     printf("Digite a data inicial: ");
     scanf("%s", startDate);
@@ -244,6 +249,7 @@ void showSumOfAppointmentPricesInAPeriod(const Appointment *appointments, int nu
 }
 
 void showSumOfAppointmentPricesOfPatient(const Appointment *appointments, int numAppointments) {
+    checkIfAppointmentsExist(numAppointments);
     int patientCode;
     printf("Digite o codigo do paciente: ");
     scanf("%d", &patientCode);
@@ -274,6 +280,7 @@ int compareDates(const char *date1, const char *date2) {
 }
 
 void showAllAppointmentsSortedByDecrescentDate(const Appointment *appointments, int numAppointments) {
+    checkIfAppointmentsExist(numAppointments);
     Appointment *sortedAppointments = (Appointment *) malloc(numAppointments * sizeof(Appointment));
     for (int i = 0; i < numAppointments; i++) {
         sortedAppointments[i] = appointments[i];
@@ -297,6 +304,7 @@ void showAllAppointmentsSortedByDecrescentDate(const Appointment *appointments, 
 }
 
 void showSumOfAppointmentPricesInADay(const Appointment *appointments, int numAppointments) {
+    checkIfAppointmentsExist(numAppointments);
     char date[11];
     printf("Digite a data: ");
     scanf("%s", date);

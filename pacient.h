@@ -15,7 +15,7 @@ void listAllPatientsInfo(Patient *patients, int numPatients);
 void printOnePatientInfo(Patient *patients, int numPatients);
 
 int compareDates(const char *date1, const char *date2);
-void checkIfPatientsExist(Patient *patients, int numPatients);
+void checkIfPatientsExist(int numPatients);
 void clearBuffer();
 int generatePatientCode(int code, Patient *patients, int numPatients);
 int findPatient(const Patient *patients, int numPatients, int code);
@@ -41,9 +41,9 @@ int generatePatientCode(int code, Patient *patients, int numPatients) {
         return maxCode + 1;
     }
 
-void checkIfPatientsExist(Patient *patients, int numPatients) {
+void checkIfPatientsExist(int numPatients) {
         if (numPatients == 0) {
-            printf("Nao existem pacientes cadastrados.\n");
+            printf("Nao existem pacientes cadastrados. Adicione um paciente e tente novamente.\n");
             return;
         }
     }
@@ -141,7 +141,7 @@ void addPatient(Patient **patients, int *numPatients) {
 }
 
 int findPatient(const Patient *patients, int numPatients, int code) {
-    checkIfPatientsExist(patients, numPatients);
+    checkIfPatientsExist(numPatients);
     for (int i = 0; i < numPatients; i++) {
         if (patients[i].code == code) {
             return i;
@@ -151,7 +151,7 @@ int findPatient(const Patient *patients, int numPatients, int code) {
 }
 
 void removePatient(Patient **patients, int *numPatients) {
-    checkIfPatientsExist(*patients, *numPatients);
+    checkIfPatientsExist(*numPatients);
     // Pegar o código do paciente
     int code;
     printf("Informe o codigo do paciente: ");
@@ -180,7 +180,7 @@ void removePatient(Patient **patients, int *numPatients) {
 }
 
 void editPatientInfo(Patient *patients, int numPatients) {
-    checkIfPatientsExist(patients, numPatients);
+    checkIfPatientsExist(numPatients);
     // Pegar o código do paciente
     int code;
     printf("Informe o codigo do paciente: ");
@@ -287,7 +287,7 @@ void editPatientInfo(Patient *patients, int numPatients) {
 }
 
 void listAllPatientsInfo(Patient *patients, int numPatients) {
-    checkIfPatientsExist(patients, numPatients);
+    checkIfPatientsExist(numPatients);
     printf("\n-----------------\n"); // Divisor
     for (int i = 0; i < numPatients; i++) {
         printf("Codigo: %d\n", patients[i].code);
@@ -299,7 +299,7 @@ void listAllPatientsInfo(Patient *patients, int numPatients) {
 }
 
 void printOnePatientInfo(Patient *patients, int numPatients) {
-    checkIfPatientsExist(patients, numPatients);
+    checkIfPatientsExist(numPatients);
     // Pegar o código do paciente
     int code;
     printf("Informe o codigo do paciente: ");
@@ -327,7 +327,7 @@ void printOnePatientInfo(Patient *patients, int numPatients) {
 }
 
 void showAllPatientsWithSameBloodType(Patient *patients, int numPatients) {
-    checkIfPatientsExist(patients, numPatients);
+    checkIfPatientsExist(numPatients);
     // Pegar o tipo sanguíneo
     printf("Informe o tipo sanguineo a ser procurado"
            "\n1. A"
@@ -364,13 +364,13 @@ void bubbleSort(Patient *patients, int numPatients) {
 }
 
 void showAllPatientsSortedByName(Patient *patients, int numPatients) {
-    checkIfPatientsExist(patients, numPatients);
+    checkIfPatientsExist(numPatients);
     bubbleSort(patients, numPatients);
     listAllPatientsInfo(patients, numPatients);
 }
 
 void showPatientsWithAppointmentsInADay(Patient *patients, int numPatients, Appointment *appointments, int numAppointments) {
-    checkIfPatientsExist(patients, numPatients);
+    checkIfPatientsExist(numPatients);
     // Pegar a data
     char date[11];
     getRequiredInput(date, "data (dd/mm/aaaa)", 11);
