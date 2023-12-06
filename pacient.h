@@ -68,9 +68,12 @@ void addPatient(Patient **patients, int *numPatients) {
     Patient *newPatient = &(*patients)[*numPatients];
 
     // Pegar informação do paciente
-    getRequiredInput(newPatient->name, "nome do paciente", 50);
-    getRequiredInput(newPatient->RG, "RG do paciente", 15);
-    getRequiredInput(newPatient->CPF, "CPF do paciente", 12);
+    getRequiredInput(newPatient->name, "nome do paciente*", 50);
+
+    printf("Informe o RG do paciente: ");
+    scanf("%s", newPatient->RG);
+
+    getRequiredInput(newPatient->CPF, "CPF do paciente*", 12);
 
     // Checar CPF duplicado
     for (int i = 0; i < *numPatients; i++) {
@@ -127,10 +130,12 @@ void addPatient(Patient **patients, int *numPatients) {
     }
 
     // Pegar o endereço do paciente
-    printf("Informe o endereço do paciente: ");
-    scanf("%s", newPatient->address);
-
-    getRequiredInput(newPatient->dob, "data de nascimento do paciente (dd/mm/aaaa)", 11);
+    
+        printf("Informe o endereço do paciente: ");
+        scanf("%s", newPatient->address);
+    do {
+        getRequiredInput(newPatient->dob, "data de nascimento do paciente (dd/mm/aaaa)*", 11);
+    } while(isValidDate(newPatient->dob));
 
     newPatient->code = generatePatientCode(newPatient, *numPatients);
 
@@ -269,7 +274,7 @@ void editPatientInfo(Patient *patients, int numPatients) {
             case 6:
                 printf("Informe o endereço do paciente: ");
                 scanf("%s", patients[index].address);
-                if (patients[index].address == NULL) {
+                if (strlen(patients[index].address) == 0) {
                     printf("Endereco nao informado, informacao sera deixada em branco.\n");
                 }
                 break;

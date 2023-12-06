@@ -16,7 +16,6 @@ void showAllAppointmentsSortedByDecrescentDate(const Appointment *appointments, 
 
 int generateAppointmentCode(const Appointment *appointments, int numAppointments);
 int findAppointment(const Appointment *appointments, int numAppointments, int code);
-bool isValidDate(const char* date);
 void checkIfAppointmentsExist(int numAppointments);
 
 void checkIfAppointmentsExist(int numAppointments) {
@@ -24,26 +23,6 @@ void checkIfAppointmentsExist(int numAppointments) {
         printf("Nao ha consultas agendadas! Adicione uma consulta e tente novamente.\n");
         exit(1);
     }
-}
-
-bool isValidDate(const char* date) {
-    if (strlen(date) != 10) {
-        return false;
-    }
-
-    if (date[2] != '/' || date[5] != '/') {
-        return false;
-    }
-
-    int day = atoi(date);
-    int month = atoi(date + 3);
-    int year = atoi(date + 6);
-
-    if (day < 1 || day > 31 || month < 1 || month > 12 || year < 1000 || year > 9999) {
-        return false;
-    }
-
-    return true;
 }
 
 int generateAppointmentCode(const Appointment *appointments, int numAppointments) {

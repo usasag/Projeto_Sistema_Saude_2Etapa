@@ -52,6 +52,8 @@ void readInfoFromFile(Patient *patients, int numPatients);
 
 void buildPatientListsFromFile(Patient **patients, int *numPatients);
 void buildAppointmentListsFromFile(Appointment **appointments, int *numAppointments);
+bool isValidDate(const char* date);
+
 
 void checkIfFileWasCreated() {
     FILE *file = fopen("patients.bin", "rb");
@@ -179,6 +181,26 @@ void buildAppointmentListsFromFile(Appointment **appointments, int *numAppointme
         fscanf(appointmentsFile, "%f", &(*appointments)[i].price);
     }
     fclose(appointmentsFile);
+}
+
+bool isValidDate(const char* date) {
+    if (strlen(date) != 10) {
+        return false;
+    }
+
+    if (date[2] != '/' || date[5] != '/') {
+        return false;
+    }
+
+    int day = atoi(date);
+    int month = atoi(date + 3);
+    int year = atoi(date + 6);
+
+    if (day < 1 || day > 31 || month < 1 || month > 12 || year < 1000 || year > 9999) {
+        return false;
+    }
+
+    return true;
 }
 
 #endif // PROJETO_SISTEMA_SAUDE_2ETAPA_FILE_LIST_FUNCTIONS_H
