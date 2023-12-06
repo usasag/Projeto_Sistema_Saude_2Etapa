@@ -1,4 +1,5 @@
-#define ATENDIMENTO_H
+#ifndef PROJETO_SISTEMA_SAUDE_2ETAPA_ATENDIMENTO_H
+#define PROJETO_SISTEMA_SAUDE_2ETAPA_ATENDIMENTO_H
 
 #include <stdbool.h>
 #include "pacient.h"
@@ -8,16 +9,24 @@ void removeAppointment(Appointment **appointments, int *numAppointments);
 void editAppointment(Appointment *appointments, int numAppointments);
 void listAllAppointments(const Appointment *appointments, int numAppointments);
 
-int generateAppointmentCode(const Appointment *appointments, int numAppointments);
-int findAppointment(const Appointment *appointments, int numAppointments, int code);
 void showAppointmentsForAPatient(const Appointment *appointments, int numAppointments);
 void showAppointmentsInADay(const Appointment *appointments, int numAppointments);
 void showSumOfAppointmentPricesInADay(const Appointment *appointments, int numAppointments);
 void showSumOfAppointmentPricesInAPeriod(const Appointment *appointments, int numAppointments);
 void showSumOfAppointmentPricesOfPatient(const Appointment *appointments, int numAppointments);
 void showAllAppointmentsSortedByDecrescentDate(const Appointment *appointments, int numAppointments);
-int compareDates(const char *date1, const char *date2);
+
+int generateAppointmentCode(const Appointment *appointments, int numAppointments);
+int findAppointment(const Appointment *appointments, int numAppointments, int code);
 bool isValidDate(const char* date);
+void checkIfAppointmentsExist(const Appointment *appointments, int numAppointments);
+
+void checkIfAppointmentsExist(const Appointment *appointments, int numAppointments) {
+    if (numAppointments == 0) {
+        printf("Nao ha consultas agendadas! Adicione uma consulta e tente novamente.\n");
+        exit(1);
+    }
+}
 
 bool isValidDate(const char* date) {
     if (strlen(date) != 10) {
@@ -37,6 +46,16 @@ bool isValidDate(const char* date) {
     }
 
     return true;
+}
+
+int generateAppointmentCode(const Appointment *appointments, int numAppointments) {
+    int maxCode = 0;
+    for (int i = 0; i < numAppointments; i++) {
+        if (appointments[i].code >= maxCode) {
+            maxCode = appointments[i].code + 1;
+        }
+    }
+    return maxCode;
 }
 
 void addAppointment(Appointment **appointments, int *numAppointments, const Patient *patients, int numPatients) {
@@ -290,3 +309,5 @@ void showSumOfAppointmentPricesInADay(const Appointment *appointments, int numAp
     }
     printf("Soma dos precos das consultas no dia: %.2f\n", sum);
 }
+
+#endif //PROJETO_SISTEMA_SAUDE_2ETAPA_ATENDIMENTO_H

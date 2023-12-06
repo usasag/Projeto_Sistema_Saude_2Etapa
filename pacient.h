@@ -1,4 +1,4 @@
-
+#ifndef PROJETO_SISTEMA_SAUDE_2ETAPA_PACIENT_H
 #define PROJETO_SISTEMA_SAUDE_2ETAPA_PACIENT_H
 #include "file_list_functions.h"
 
@@ -14,7 +14,8 @@ void editPatientInfo(Patient *patients, int numPatients);
 void listAllPatientsInfo(Patient *patients, int numPatients);
 void printOnePatientInfo(Patient *patients, int numPatients);
 
-
+int compareDates(const char *date1, const char *date2);
+void checkIfPatientsExist(Patient *patients, int numPatients);
 void clearBuffer();
 int generatePatientCode(int code, Patient *patients, int numPatients);
 int findPatient(const Patient *patients, int numPatients, int code);
@@ -24,6 +25,28 @@ void clearBuffer() {
         int c;
         while ((c = getchar()) != '\n' && c != EOF);
 }
+
+int generatePatientCode(int code, Patient *patients, int numPatients) {
+        if (numPatients == 0) {
+            return 1;
+        }
+
+        int maxCode = 0;
+        for (int i = 0; i < numPatients; i++) {
+            if (patients[i].code > maxCode) {
+                maxCode = patients[i].code;
+            }
+        }
+
+        return maxCode + 1;
+    }
+
+void checkIfPatientsExist(Patient *patients, int numPatients) {
+        if (numPatients == 0) {
+            printf("Nao existem pacientes cadastrados.\n");
+            return;
+        }
+    }
 
 void getRequiredInput(char *input, const char *fieldName, int maxLength) {
         do {
@@ -118,6 +141,7 @@ void addPatient(Patient **patients, int *numPatients) {
 }
 
 int findPatient(const Patient *patients, int numPatients, int code) {
+    checkIfPatientsExist(patients, numPatients);
     for (int i = 0; i < numPatients; i++) {
         if (patients[i].code == code) {
             return i;
@@ -127,6 +151,7 @@ int findPatient(const Patient *patients, int numPatients, int code) {
 }
 
 void removePatient(Patient **patients, int *numPatients) {
+    checkIfPatientsExist(*patients, *numPatients);
     // Pegar o código do paciente
     int code;
     printf("Informe o codigo do paciente: ");
@@ -155,6 +180,7 @@ void removePatient(Patient **patients, int *numPatients) {
 }
 
 void editPatientInfo(Patient *patients, int numPatients) {
+    checkIfPatientsExist(patients, numPatients);
     // Pegar o código do paciente
     int code;
     printf("Informe o codigo do paciente: ");
@@ -261,6 +287,7 @@ void editPatientInfo(Patient *patients, int numPatients) {
 }
 
 void listAllPatientsInfo(Patient *patients, int numPatients) {
+    checkIfPatientsExist(patients, numPatients);
     printf("\n-----------------\n"); // Divisor
     for (int i = 0; i < numPatients; i++) {
         printf("Codigo: %d\n", patients[i].code);
@@ -272,6 +299,7 @@ void listAllPatientsInfo(Patient *patients, int numPatients) {
 }
 
 void printOnePatientInfo(Patient *patients, int numPatients) {
+    checkIfPatientsExist(patients, numPatients);
     // Pegar o código do paciente
     int code;
     printf("Informe o codigo do paciente: ");
@@ -299,6 +327,7 @@ void printOnePatientInfo(Patient *patients, int numPatients) {
 }
 
 void showAllPatientsWithSameBloodType(Patient *patients, int numPatients) {
+    checkIfPatientsExist(patients, numPatients);
     // Pegar o tipo sanguíneo
     printf("Informe o tipo sanguineo a ser procurado"
            "\n1. A"
@@ -335,11 +364,13 @@ void bubbleSort(Patient *patients, int numPatients) {
 }
 
 void showAllPatientsSortedByName(Patient *patients, int numPatients) {
+    checkIfPatientsExist(patients, numPatients);
     bubbleSort(patients, numPatients);
     listAllPatientsInfo(patients, numPatients);
 }
 
 void showPatientsWithAppointmentsInADay(Patient *patients, int numPatients, Appointment *appointments, int numAppointments) {
+    checkIfPatientsExist(patients, numPatients);
     // Pegar a data
     char date[11];
     getRequiredInput(date, "data (dd/mm/aaaa)", 11);
@@ -358,3 +389,5 @@ void showPatientsWithAppointmentsInADay(Patient *patients, int numPatients, Appo
         }
     }
 }
+
+#endif // PROJETO_SISTEMA_SAUDE_2ETAPA_PACIENT_H

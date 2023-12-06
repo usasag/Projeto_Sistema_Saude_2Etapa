@@ -1,5 +1,6 @@
-#ifndef FILE_LIST_FUNCTIONS_H
-#define FILE_LIST_FUNCTIONS.H
+#ifndef PROJETO_SISTEMA_SAUDE_2ETAPA_FILE_LIST_FUNCTIONS_H
+#define PROJETO_SISTEMA_SAUDE_2ETAPA_FILE_LIST_FUNCTIONS_H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -41,6 +42,16 @@ typedef struct {
     enum Status status;
     float price;
 } Appointment;
+
+void checkIfFileExists();
+void checkIfFileWasCreated();
+void fromListToDisk(Patient *patients, int numPatients);
+void fromDiskToList(Patient **patients, int *numPatients);
+void writeInfoInFile(Patient *patients, int numPatients);
+void readInfoFromFile(Patient *patients, int numPatients);
+
+void buildPatientListsFromFile(Patient **patients, int *numPatients);
+void buildAppointmentListsFromFile(Appointment **appointments, int *numAppointments);
 
 void checkIfFileWasCreated() {
     FILE *file = fopen("patients.bin", "rb");
@@ -170,4 +181,4 @@ void buildAppointmentListsFromFile(Appointment **appointments, int *numAppointme
     fclose(appointmentsFile);
 }
 
-#endif // FILE_LIST_FUNCTIONS_H
+#endif // PROJETO_SISTEMA_SAUDE_2ETAPA_FILE_LIST_FUNCTIONS_H

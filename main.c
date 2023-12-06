@@ -54,7 +54,7 @@ int main()
                removePatient(&patients, &numPatients);
                 break;
             case 3:
-                editPatient(patients, numPatients);
+                editPatientInfo(patients, numPatients);
                 break;
             case 4:
                 printOnePatientInfo(patients, numPatients);
@@ -103,54 +103,4 @@ int main()
 
         return 0;
     }
-}
-
-// Função para editar atendimentos
-void editAppointment(Appointment *appointments, int numAppointments) {
-    // TODO Pegar o código do atendimento a ser editado
-    // ...
-
-    // TODO Achar o atendimento na array de structs
-    // ...
-
-    // TODO Pegar as informações novas do usuário
-    // TODO Menu com as informações editáveis no mesmo estilo da função "addPatient"
-    // ...
-
-    // Print confirmando
-    printf("Informação editada com sucesso.\n");
-}
-
-// Função para remover um atendimento
-void removeAppointment(Appointment **appointments, int *numAppointments) {
-    // TODO Pegar o código do atendimento a ser removido
-    // ...
-
-    // TODO Achar o atendimento na array de structs
-    // ...
-
-    // TODO Remover o atendimento (deslocar os elementos na array)
-    // ...
-
-    // Redimensionar a array
-    *appointments = realloc(*appointments, (*numAppointments - 1) * sizeof(Appointment));
-
-    // Decrementar o número total de atendimentos
-    (*numAppointments)--;
-
-    // Print pra confirmar
-    printf("Atendimento removido com sucesso.\n");
-}
-
-// Função para mostrar as infos do atendimento
-void printAppointment(const Appointment *appointment) {
-    // TODO: Mostrar informações do atendimento
-    // ...
-}
-
-
-// Função para gerar código único para atendimento
-int generateAppointmentCode(const Appointment *appointments, int numAppointments) {
-    // TODO: Gerar um código que não exista ainda (comparar pra ver se existe)
-    // ...
 }
