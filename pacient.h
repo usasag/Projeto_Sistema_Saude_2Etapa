@@ -17,7 +17,7 @@ void printOnePatientInfo(Patient *patients, int numPatients);
 int compareDates(const char *date1, const char *date2);
 void checkIfPatientsExist(int numPatients);
 void clearBuffer();
-int generatePatientCode(int code, Patient *patients, int numPatients);
+int generatePatientCode(Patient *patients, int numPatients);
 int findPatient(const Patient *patients, int numPatients, int code);
 
 
@@ -26,7 +26,7 @@ void clearBuffer() {
         while ((c = getchar()) != '\n' && c != EOF);
 }
 
-int generatePatientCode(int code, Patient *patients, int numPatients) {
+int generatePatientCode(Patient *patients, int numPatients) {
         if (numPatients == 0) {
             return 1;
         }
@@ -132,7 +132,7 @@ void addPatient(Patient **patients, int *numPatients) {
 
     getRequiredInput(newPatient->dob, "data de nascimento do paciente (dd/mm/aaaa)", 11);
 
-    newPatient->code = generatePatientCode(newPatient->code, newPatient, *numPatients);
+    newPatient->code = generatePatientCode(newPatient, *numPatients);
 
     (*numPatients)++;
 
