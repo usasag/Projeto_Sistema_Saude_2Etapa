@@ -34,12 +34,12 @@ determinada data de atendimento
 - mostrar/imprimir a soma das consultas pagas para os atendimentos de um
 determinado período de atendimento (entre uma data inicial e final).*/
 
-void limparBuffer() {
+void limparBuffer() { //função para limpar buffer
     int c;
     while ((c = getchar()) != '\n' && c != EOF);
 }
 
-int CodeGenerator(int code)
+int CodeGenerator(int code) //função para geração de código
 {
     srand(time(NULL));
     code = rand() % 900 + 100;
@@ -47,7 +47,7 @@ int CodeGenerator(int code)
     return code;
 }
 
-int CodeCheck(int Code)
+int CodeCheck(int Code) //função para verificação de divergencia para codigo de atendimento
 {
     
     CodeGenerator(Code);
@@ -58,11 +58,12 @@ int CodeCheck(int Code)
         CodeGenerator(Code);
     matrixArmaz[count] = Code;
     count++;
+    free(matrixArmaz);
 
     return Code;
 }
 
-void atualTime(char *AtualData)
+void atualTime(char *AtualData) //função que verifica a data do dia em tempo de execução
 {
     time_t AtualTime;
     struct tm *infoTime;
@@ -73,7 +74,7 @@ void atualTime(char *AtualData)
 }
 
 int addService(int CodeService, int PatientCode, char TypeService[], char ServiceDate[],
-                char status[])
+                char status[]) //função para adicionar novo atendimento
 {
     atualTime(ServiceDate);
 
