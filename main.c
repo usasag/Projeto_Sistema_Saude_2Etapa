@@ -13,7 +13,8 @@ int main()
     buildPatientListsFromFile(&patients, &numPatients);
     buildAppointmentListsFromFile(&appointments, &numAppointments);
 
-    while (1) {
+    while (1)
+    {
         printf("--------------------------------------------\n");
         printf("Pacientes:\n");
         printf("\n1. Adicionar Paciente\n");
@@ -40,12 +41,14 @@ int main()
 
         int choice;
         printf("Digite sua escolha: ");
-        scanf("%d \n", &choice);
+        scanf("%d", &choice);
 
         switch (choice) {
             case 0:
                 writeInfoInFile(patients, numPatients);
                 printf("Salvando informacoes em arquivo e saindo...\n");
+                free(patients);
+                free(appointments);                
                 exit(0);
             case 1:
                addPatient(&patients,&numPatients);
@@ -98,9 +101,8 @@ int main()
             default:
                 printf("Opcao invalida.\n");
         }
-        free(patients);
-        free(appointments);
-
-        return 0;
     }
+    free(patients);
+    free(appointments); 
+    return 0;
 }

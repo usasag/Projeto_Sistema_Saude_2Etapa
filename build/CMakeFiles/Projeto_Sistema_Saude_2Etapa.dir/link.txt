@@ -1,0 +1,3 @@
+"C:\Program Files\CMake\bin\cmake.exe" -E rm -f CMakeFiles\Projeto_Sistema_Saude_2Etapa.dir/objects.a
+C:\MinGW\bin\ar.exe qc CMakeFiles\Projeto_Sistema_Saude_2Etapa.dir/objects.a @CMakeFiles\Projeto_Sistema_Saude_2Etapa.dir\objects1.rsp
+C:\MinGW\bin\gcc.exe -g -Wl,--whole-archive CMakeFiles\Projeto_Sistema_Saude_2Etapa.dir/objects.a -Wl,--no-whole-archive -o Projeto_Sistema_Saude_2Etapa.exe -Wl,--out-implib,libProjeto_Sistema_Saude_2Etapa.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\Projeto_Sistema_Saude_2Etapa.dir\linkLibs.rsp

@@ -109,16 +109,6 @@ void writeInfoInFile(Patient *patients, int numPatients) {
         }
         fclose(patientsFile);
 }
-void fromDiskToList(Patient **patients, int *numPatients) {
-        checkIfFileExists();
-        FILE *patientsFile = fopen("patients.bin", "rb");
-        if (patientsFile == NULL) {
-            printf("Erro ao abrir o arquivo.\n");
-            return;
-        }
-        fread(numPatients, sizeof(int), 1, patientsFile);
-        fclose(patientsFile);
-}
 
 void readInfoFromFile(Patient *patients, int numPatients) {
     checkIfFileExists();

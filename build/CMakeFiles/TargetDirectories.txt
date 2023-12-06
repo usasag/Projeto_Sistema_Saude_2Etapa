@@ -1,0 +1,3 @@
+C:/Users/jorge/OneDrive/Documentos/GitHub/Projeto_Sistema_Saude_2Etapa/build/CMakeFiles/Projeto_Sistema_Saude_2Etapa.dir
+C:/Users/jorge/OneDrive/Documentos/GitHub/Projeto_Sistema_Saude_2Etapa/build/CMakeFiles/edit_cache.dir
+C:/Users/jorge/OneDrive/Documentos/GitHub/Projeto_Sistema_Saude_2Etapa/build/CMakeFiles/rebuild_cache.dir

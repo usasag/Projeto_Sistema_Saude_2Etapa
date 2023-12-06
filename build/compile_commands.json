@@ -1,0 +1,8 @@
+[
+{
+  "directory": "C:/Users/jorge/OneDrive/Documentos/GitHub/Projeto_Sistema_Saude_2Etapa/build",
+  "command": "C:\\MinGW\\bin\\gcc.exe   -g -o CMakeFiles\\Projeto_Sistema_Saude_2Etapa.dir\\main.c.obj -c C:\\Users\\jorge\\OneDrive\\Documentos\\GitHub\\Projeto_Sistema_Saude_2Etapa\\main.c",
+  "file": "C:/Users/jorge/OneDrive/Documentos/GitHub/Projeto_Sistema_Saude_2Etapa/main.c",
+  "output": "CMakeFiles/Projeto_Sistema_Saude_2Etapa.dir/main.c.obj"
+}
+]

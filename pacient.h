@@ -58,6 +58,7 @@ void getRequiredInput(char *input, const char *fieldName, int maxLength) {
                 printf("Esta informacao e obrigatoria, por favor informe %s.\n", fieldName);
             }
         } while (strlen(input) == 0 || strlen(input) >= maxLength);
+        clearBuffer();
     }
 
 void addPatient(Patient **patients, int *numPatients) {
@@ -67,13 +68,29 @@ void addPatient(Patient **patients, int *numPatients) {
     // Acessar o ultimo elemento no array para colocar o novo paciente
     Patient *newPatient = &(*patients)[*numPatients];
 
-    // Pegar informação do paciente
+    // Pegar nome do paciente
     getRequiredInput(newPatient->name, "nome do paciente*", 50);
 
+    // Pegar RG do paciente
     printf("Informe o RG do paciente: ");
-    scanf("%s", newPatient->RG);
+fgets(newPatient->RG, sizeof(newPatient->RG), stdin);
 
-    getRequiredInput(newPatient->CPF, "CPF do paciente*", 12);
+// Remove the newline character if it's present
+if (newPatient->RG[strlen(newPatient->RG) - 1] == '\n') {
+    newPatient->RG[strlen(newPatient->RG) - 1] = '\0';
+}
+
+if (strlen(newPatient->RG) == 0) {
+    printf("RG nao informado, informacao sera deixada em branco.\n");
+}
+
+    // Pegar CPF do paciente
+    do {
+        getRequiredInput(newPatient->CPF, "CPF do paciente*", 12);
+        if (strlen(newPatient->CPF) != 11) {
+            printf("CPF deve conter 11 digitos. Por favor, informe novamente.\n");
+        }
+    } while (strlen(newPatient->CPF) != 11);
 
     // Checar CPF duplicado
     for (int i = 0; i < *numPatients; i++) {
@@ -89,8 +106,7 @@ void addPatient(Patient **patients, int *numPatients) {
            "\n1. A"
            "\n2. B"
            "\n3. AB"
-           "\n4. O"
-           "\n");
+           "\n4. O");
     int bloodTypeInput;
     scanf("%d", &bloodTypeInput);
 
@@ -109,13 +125,14 @@ void addPatient(Patient **patients, int *numPatients) {
             break;
         default:
             printf("Tipo sanguineo nao informado, informacao sera deixada em branco.\n");
+            newPatient->bloodType = '\0';
             break;
     }
 
     // Pegar fator RH
     printf("Informe o Fator RH (+/-): ");
     int rhFactorInput;
-    scanf(" %d", &rhFactorInput);
+    scanf("%d", &rhFactorInput);
 
     switch (rhFactorInput) {
         case 1:
@@ -126,21 +143,32 @@ void addPatient(Patient **patients, int *numPatients) {
             break;
         default:
             printf("Fator RH nao informado, informacao sera deixada em branco.\n");
+            newPatient->rhFactor = '\0';
             break;
     }
 
     // Pegar o endereço do paciente
-    
-        printf("Informe o endereço do paciente: ");
-        scanf("%s", newPatient->address);
-    do {
-                    getRequiredInput(newPatient->dob, "data de nascimento do paciente (dd/mm/aaaa)*", 11);
-                    if (!isValidDate(newPatient->dob)) {
-                        printf("Data invalida! Por favor digite uma data valida!\n"
-                               "Formato: (dd/mm/aaaa)\n"
-                               "Exemplo: 01/01/2000\n");
-                    }
-                } while(!isValidDate(newPatient->dob));
+    printf("Informe o endereco do paciente: ");
+    fgets(newPatient->address, sizeof(newPatient->address), stdin);
+
+// Remove the newline character if it's present
+    if (newPatient->address[strlen(newPatient->address) - 1] == '\n') {
+        newPatient->address[strlen(newPatient->address) - 1] = '\0';
+    }
+
+    if (strlen(newPatient->address) == 0) {
+        printf("Endereco nao informado, informacao sera deixada em branco.\n");
+    }
+    // Pegar a data de nascimento do paciente
+    while (1) {
+        getRequiredInput(newPatient->dob, "data de nascimento do paciente (dd/mm/aaaa)*", 11);
+        if (isValidDate(newPatient->dob)) {
+            break;
+        }
+        printf("Data invalida! Por favor digite uma data valida!\n"
+               "Formato: (dd/mm/aaaa)\n"
+               "Exemplo: 01/01/2000\n");
+    }
 
     newPatient->code = generatePatientCode(newPatient, *numPatients);
 
