@@ -53,6 +53,7 @@ void readInfoFromFile(Patient *patients, int numPatients);
 void buildPatientListsFromFile(Patient **patients, int *numPatients);
 void buildAppointmentListsFromFile(Appointment **appointments, int *numAppointments);
 bool isValidDate(const char* date);
+void removeAllAppointmentsOfAPatient(Appointment **appointments, int *numAppointments, int patientCode);
 
 
 void checkIfFileWasCreated() {
@@ -191,6 +192,18 @@ bool isValidDate(const char* date) {
     }
 
     return true;
+}
+
+void removeAllAppointmentsOfAPatient(Appointment **appointments, int *numAppointments, int patientCode) {
+    for (int i = 0; i < *numAppointments; i++) {
+        if ((*appointments)[i].patientCode == patientCode) {
+            for (int j = i; j < *numAppointments - 1; j++) {
+                (*appointments)[j] = (*appointments)[j + 1];
+            }
+            *numAppointments -= 1;
+            *appointments = (Appointment *) realloc(*appointments, *numAppointments * sizeof(Appointment));
+        }
+    }
 }
 
 #endif // PROJETO_SISTEMA_SAUDE_2ETAPA_FILE_LIST_FUNCTIONS_H

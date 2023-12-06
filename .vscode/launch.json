@@ -1,6 +1,19 @@
 {
   "version": "0.2.0",
   "configurations": [
+
+    {
+      "name": "(Windows) Launch",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "enter program name, for example ${workspaceFolder}/a.exe",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${fileDirname}",
+      "environment": [],
+      "console": "externalTerminal"
+    },
+
     
     {
       "name": "C/C++ Runner: Debug Session",
@@ -10,7 +23,7 @@
       "stopAtEntry": false,
       "externalConsole": true,
       "cwd": ".",
-      "program": "build/Debug/outDebug",
+      "program": "C:/Users/jorge/OneDrive/Documentos/GitHub/Projeto_Sistema_Saude_2Etapa/build/Projeto_Sistema_Saude_2Etapa.exe",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

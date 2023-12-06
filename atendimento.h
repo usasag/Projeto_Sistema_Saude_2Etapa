@@ -2,7 +2,8 @@
 #define PROJETO_SISTEMA_SAUDE_2ETAPA_ATENDIMENTO_H
 
 #include <stdbool.h>
-#include "pacient.h"
+
+#include "file_list_functions.h"
 
 void addAppointment(Appointment **appointments, int *numAppointments, const Patient *patients, int numPatients);
 void removeAppointment(Appointment **appointments, int *numAppointments);
@@ -16,12 +17,13 @@ void showAllAppointmentsSortedByDecrescentDate(const Appointment *appointments, 
 
 int generateAppointmentCode(const Appointment *appointments, int numAppointments);
 int findAppointment(const Appointment *appointments, int numAppointments, int code);
-void checkIfAppointmentsExist(int numAppointments);
+bool checkIfAppointmentsExist(int numAppointments);
 
-void checkIfAppointmentsExist(int numAppointments) {
+bool checkIfAppointmentsExist(int numAppointments) {
     if (numAppointments == 0) {
-        printf("Nao ha consultas agendadas! Adicione uma consulta e tente novamente.\n");
-        exit(1);
+        return false;
+    } else {
+        return true;
     }
 }
 
@@ -93,7 +95,6 @@ void addAppointment(Appointment **appointments, int *numAppointments, const Pati
 }
 
 int findAppointment(const Appointment *appointments, int numAppointments, int code) {
-    checkIfAppointmentsExist(numAppointments);
     for (int i = 0; i < numAppointments; i++) {
         if (appointments[i].code == code) {
             return i;
@@ -103,7 +104,10 @@ int findAppointment(const Appointment *appointments, int numAppointments, int co
 }
 
 void removeAppointment(Appointment **appointments, int *numAppointments) {
-    checkIfAppointmentsExist(*numAppointments);
+    if(!checkIfAppointmentsExist(numAppointments)) {
+        printf("Nao existem atendimentos cadastrados! Adicione algum atendimento e tente novamente.\n");
+        return;
+    }
     int code;
     printf("Digite o codigo do atendimento: ");
     scanf("%d", &code);
@@ -121,7 +125,10 @@ void removeAppointment(Appointment **appointments, int *numAppointments) {
 }
 
 void editAppointment(Appointment *appointments, int numAppointments) {
-    checkIfAppointmentsExist(numAppointments);
+    if(!checkIfAppointmentsExist(numAppointments)) {
+        printf("Nao existem atendimentos cadastrados! Adicione algum atendimento e tente novamente.\n");
+        return;
+    }
     int code;
     printf("Digite o codigo do atendimento: ");
     scanf("%d", &code);
@@ -164,7 +171,10 @@ void editAppointment(Appointment *appointments, int numAppointments) {
 }
 
 void showAppointmentsForAPatient(const Appointment *appointments, int numAppointments) {
-    checkIfAppointmentsExist(numAppointments);
+    if(!checkIfAppointmentsExist(numAppointments)) {
+        printf("Nao existem atendimentos cadastrados! Adicione algum atendimento e tente novamente.\n");
+        return;
+    }
     int patientCode;
     printf("Digite o codigo do paciente: ");
     scanf("%d", &patientCode);
@@ -178,7 +188,10 @@ void showAppointmentsForAPatient(const Appointment *appointments, int numAppoint
 }
 
 void showSumOfAppointmentPricesInAPeriod(const Appointment *appointments, int numAppointments) {
-    checkIfAppointmentsExist(numAppointments);
+    if(!checkIfAppointmentsExist(numAppointments)) {
+        printf("Nao existem atendimentos cadastrados! Adicione algum atendimento e tente novamente.\n");
+        return;
+    }
     char startDate[11], endDate[11];
     printf("Digite a data inicial: ");
     scanf("%s", startDate);
@@ -204,7 +217,10 @@ void showSumOfAppointmentPricesInAPeriod(const Appointment *appointments, int nu
 }
 
 void showSumOfAppointmentPricesOfPatient(const Appointment *appointments, int numAppointments) {
-    checkIfAppointmentsExist(numAppointments);
+    if(!checkIfAppointmentsExist(numAppointments)) {
+        printf("Nao existem atendimentos cadastrados! Adicione algum atendimento e tente novamente.\n");
+        return;
+    }
     int patientCode;
     printf("Digite o codigo do paciente: ");
     scanf("%d", &patientCode);
@@ -235,7 +251,10 @@ int compareDates(const char *date1, const char *date2) {
 }
 
 void showAllAppointmentsSortedByDecrescentDate(const Appointment *appointments, int numAppointments) {
-    checkIfAppointmentsExist(numAppointments);
+    if(!checkIfAppointmentsExist(numAppointments)) {
+        printf("Nao existem atendimentos cadastrados! Adicione algum atendimento e tente novamente.\n");
+        return;
+    }
     Appointment *sortedAppointments = (Appointment *) malloc(numAppointments * sizeof(Appointment));
     for (int i = 0; i < numAppointments; i++) {
         sortedAppointments[i] = appointments[i];
@@ -259,7 +278,10 @@ void showAllAppointmentsSortedByDecrescentDate(const Appointment *appointments, 
 }
 
 void showSumOfAppointmentPricesInADay(const Appointment *appointments, int numAppointments) {
-    checkIfAppointmentsExist(numAppointments);
+    if(!checkIfAppointmentsExist(numAppointments)) {
+        printf("Nao existem atendimentos cadastrados! Adicione algum atendimento e tente novamente.\n");
+        return;
+    }
     char date[11];
     printf("Digite a data: ");
     scanf("%s", date);
