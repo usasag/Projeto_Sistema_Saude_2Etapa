@@ -1,5 +1,7 @@
 // #define PROJETO_SISTEMA_SAUDE_TRABALHO_ATENDIMENTO_H
 #include "pacientes.h"
+#include <string.h>
+#define MAXcode 1000
 
 
 /*Variáveis para cada atendimento:
@@ -34,6 +36,8 @@ determinada data de atendimento
 - mostrar/imprimir a soma das consultas pagas para os atendimentos de um
 determinado período de atendimento (entre uma data inicial e final).*/
 
+int *matrixCode;
+
 void limparBuffer() { //função para limpar buffer
     int c;
     while ((c = getchar()) != '\n' && c != EOF);
@@ -41,30 +45,26 @@ void limparBuffer() { //função para limpar buffer
 
 int CodeGenerator(int code) //função para geração de código
 {
+    code = 0;
     srand(time(NULL));
-    code = rand() % 900 + 100;
+    code = rand() % (900 + 100);
 
     return code;
 }
 
 int CodeCheck(int Code) //função para verificação de divergencia para codigo de atendimento
 {
-    
-    CodeGenerator(Code);
-    int *matrixArmaz = NULL;
-    static int count = 0;
-    matrixArmaz = (int *)malloc(50 * sizeof(int));
-    while (Code == *matrixArmaz)
+    matrixCode = (int *)malloc(MAXcode * sizeof(int));
+    int count = 0;
+    while(Code == matrixCode[count])
         CodeGenerator(Code);
-    matrixArmaz[count] = Code;
+    matrixCode [count] = Code;
     count++;
-    free(matrixArmaz);
-
-    return Code;
 }
 
 void atualTime(char *AtualData) //função que verifica a data do dia em tempo de execução
 {
+    int count = 0;
     time_t AtualTime;
     struct tm *infoTime;
     time(&AtualTime);
@@ -73,30 +73,102 @@ void atualTime(char *AtualData) //função que verifica a data do dia em tempo d
 
 }
 
-int addService(int CodeService, int PatientCode, char TypeService[], char ServiceDate[],
-                char status[]) //função para adicionar novo atendimento
+int priceTable(char price[])
 {
-    atualTime(ServiceDate);
+    int speciality = 0;
 
-    CodeService =  CodeCheck(CodeService);
-    printf("%i", CodeService);
+    printf("-----Medical Specialty-----\n");
+    printf("(1) - Cardiology\n");
+    printf("(2) - Dermatology\n");
+    printf("(3) - Gynecology\n");
+    printf("Select specialty: ");
+    scanf("%i", &speciality);
 
-    FILE *newService;
-    newService = fopen("Services.txt", "w");
-    fprintf(newService, "%d\n", CodeService);
+    switch(speciality)
+    {
+        case 1: 
+            strcat(price,"R$120.00");
+            break;
+        case 2: 
+            strcat(price,"R$200.00");
+            break;
+        case 3:
+            strcat(price,"R$80.00");
+            break;
+        default:
+            printf("Please enter a valid option!");
+            return -3;
+    }
+}
 
-    newService = fopen("Services.txt", "a");
-    fprintf(newService, "%d\n", PatientCode);
+void ConvertIntToChar(int variableInt)
+{
+    char patientCode[12];
+    sprintf(patientCode, "%i", variableInt);
+}
 
-    newService = fopen("Services.txt", "a");
-    fprintf(newService, "%s\n", TypeService);
+void addService(int CodeService, int PatientCode, char TypeService[], char ServiceDate[],
+                char *status, char *price) //função para adicionar novo atendimento
+{
+    int typeService, Status;
+    CodeCheck(CodeService);
+    printf("Seu codigo de atendimento eh: %i\n", &CodeService);
 
-    newService = fopen("Services.txt", "a");
-    fprintf(newService, "%s\n", ServiceDate);
+    printf("Insira o codigo do paciente: ");
+    scanf("%i", &PatientCode);
 
-    newService = fopen("Services.txt", "a");
-    fprintf(newService, "%s\n", status);
-
+    // printf("Selecione o tipo de atendimento: (1) Consulta | (2) Retorno - ");
+    // scanf("%d", &typeService);
 
     
+
+    while(typeService != 1 && typeService != 2)
+    {
+        printf("Selecione o tipo de atendimento: (1) Consulta | (2) Retorno - ");
+        scanf("%d", &typeService);
+    }
+
+    if(typeService == 1)
+        strcpy(TypeService, "Consulta");
+    else 
+        strcpy(TypeService, "Retorno");
+
+    printf("Insira a data do atendimento: ");
+    scanf("%s", &ServiceDate);
+
+    while(Status != 1 && Status != 2 && Status != 3 && Status != 4)
+    {
+        printf("Selecione o status do atendimento: ");
+        printf("(1) Agendado | (2) Esperando | (3) Em atendimento | (4) Atendido - ");
+        scanf("%i", &Status);
+    }
+
+    printf("%s", status);
+
+    switch(Status)
+    {
+        case 1:
+            strcpy(status, "Agendado");
+            break;
+        case 2:
+            strcpy(status, "Esperando");
+            break;
+        case 3:
+            strcpy(status, "Em atendimento");
+            break;
+        case 4:
+            strcpy(status, "Atendido");
+            break;
+    }
+
+    printf("Insira o valor da consulta: ");
+    scanf("%s", &price);
+
+    printf("\n----------INFORMACOES DO ATENDIMENTO----------\n");
+    printf("Codigo do atendimento: %i\n", CodeService);
+    printf("Codigo do paciente: %i\n", PatientCode);
+    printf("Tipo de atendimento: %s\n", TypeService);
+    printf("Data do atendimento: %s\n", ServiceDate);
+    printf("Status do atendimento: %s\n", status);
+    printf("Preco do atendimento: %s\n", price);
 }
