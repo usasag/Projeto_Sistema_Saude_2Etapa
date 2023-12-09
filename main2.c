@@ -6,10 +6,13 @@
 
 int main()
 {
-    struct Service{
+    srand(time(NULL)); 
+    
+    struct Service
+    {
         int CodeService;
         int PatientCode;
-        int serviceType; 
+        int serviceType;
         char *ServiceType;
         char *ServiceDate;
         int Status;
@@ -19,23 +22,20 @@ int main()
     typedef struct Service service;
     service AddService;
 
-    // int mainMenu, secondMenu;
-    // printf("-----MENU-----\n");
-    // printf("(1) - New service\n");
-    // printf("(2) - Change service\n");
-    // printf("(3) - Delete service\n");
-    // printf("(4) - Show service data with code\n");
-    // printf("(4) - Show all patient visits\n");
-    // printf("(4) - Show all calls based on day\n");
-    // printf("Select the desired option: ");
-    // scanf("%i", &mainMenu);
+    // Aloca espaço para as strings
+    AddService.ServiceType = (char *)malloc(50 * sizeof(char));
+    AddService.ServiceDate = (char *)malloc(12 * sizeof(char));
+    AddService.status = (char *)malloc(20 * sizeof(char));
+    AddService.ConsultationValue = (char *)malloc(10 * sizeof(char));
 
     addService(AddService.CodeService, AddService.PatientCode, AddService.ServiceType,
-                AddService.ServiceDate, AddService.status, AddService.ConsultationValue);
+               AddService.ServiceDate, AddService.status, AddService.ConsultationValue);
 
-    
-    
+    // Libera a memória alocada para as strings
+    free(AddService.ServiceType);
+    free(AddService.ServiceDate);
+    free(AddService.status);
+    free(AddService.ConsultationValue);
 
-    
-
+    return 0;
 }
