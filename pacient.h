@@ -59,7 +59,7 @@ void getRequiredInput(char *input, const char *fieldName, int maxLength) {
         printf("Informe %s: ", fieldName);
         fgets(input, maxLength, stdin);
 
-        // Remove the newline character from the input
+        // Remove o \n da string
         input[strcspn(input, "\n")] = '\0';
 
         if (strlen(input) == 0) {
@@ -401,13 +401,13 @@ void editPatientInfo(Patient *patients, int numPatients) {
                 }
                 break;
             case 7:
-                    printf("Informe o endereco do paciente: ");
-                    if (fgets(patients[index].address, sizeof(patients[index].address), stdin) != NULL) {
-                        patients[index].address[strcspn(patients[index].address, "\n")] = '\0';
-                    }
-                    if (strlen(patients[index].address) == 0) {
-                        printf("Endereco nao informado, informacao sera deixada em branco.\n");
-                    }
+                printf("Informe o endereco do paciente: ");
+                if (fgets(patients[index].address, sizeof(patients[index].address), stdin) != NULL) {
+                    patients[index].address[strcspn(patients[index].address, "\n")] = '\0';
+                }
+                if (strlen(patients[index].address) == 0) {
+                    printf("Endereco nao informado, informacao sera deixada em branco.\n");
+                }
                 break;
             case 8:
                 do {
@@ -496,7 +496,8 @@ void showAllPatientsWithSameBloodType(Patient *patients, int numPatients) {
         if (patients[i].bloodType == bloodTypeInput) {
             printf("Codigo: %d\n", patients[i].code);
             printf("Nome: %s\n", patients[i].name);
-            printf("Tipo sanguineo: %d\n", patients[i].bloodType);
+            printf("Tipo sanguineo: %s\n", bloodTypeStrings[patients[i].bloodType]);
+            printf("Fator RH: %s\n", rhFactorStrings[patients[i].rhFactor]);
             printf("Data de nascimento: %s\n", patients[i].dob); 
             printf("\n-----------------\n"); // Divisor
         }
