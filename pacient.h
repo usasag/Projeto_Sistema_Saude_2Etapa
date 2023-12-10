@@ -3,6 +3,7 @@
 
 #include "atendimento.h"
 
+
 void getRequiredInput(char *input, const char *fieldName, int maxLength);
 void addPatient(Patient **patients, int *numPatients);
 void removePatient(Patient **patients, int *numPatients, Appointment **appointments, int *numAppointments);
@@ -63,10 +64,10 @@ void getRequiredInput(char *input, const char *fieldName, int maxLength) {
 
         if (strlen(input) == 0) {
             printf("Esta informacao e obrigatoria, por favor informe %s.\n", fieldName);
-        } else if (strlen(input) >= maxLength - 1) {
+        } else if (strlen(input) > maxLength - 1) {
             printf("Limite de caracteres (%d) ultrapassado, verifique a informacao e tente novamente.\n", maxLength - 1);
         }
-    } while (strlen(input) == 0 || strlen(input) >= maxLength - 1);
+    } while (strlen(input) == 0 || strlen(input) > maxLength - 1);
 }
 
 void addPatient(Patient **patients, int *numPatients) {
@@ -497,7 +498,7 @@ void showAllPatientsWithSameBloodType(Patient *patients, int numPatients) {
             printf("Nome: %s\n", patients[i].name);
             printf("Tipo sanguineo: %s\n", bloodTypeStrings[patients[i].bloodType]);
             printf("Fator RH: %s\n", rhFactorStrings[patients[i].rhFactor]);
-            printf("Data de nascimento: %s\n", patients[i].dob); 
+            printf("Data de nascimento: %s\n", patients[i].dob);
             printf("\n-----------------\n"); // Divisor
         }
     }
@@ -525,7 +526,6 @@ void showAllPatientsSortedByName(Patient *patients, int numPatients) {
     listAllPatientsInfo(patients, numPatients);
 }
 
-// TODO A função está funcionando, mas é necessário verificar se existem pacientes e consultas, caso contrário, retornar uma mensagem de erro
 void showPatientsWithAppointmentsInADay(Patient *patients, int numPatients, Appointment *appointments, int numAppointments) {
     if (!checkIfPatientsExist(numPatients))
     {

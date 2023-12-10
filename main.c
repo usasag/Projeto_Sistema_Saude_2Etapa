@@ -1,6 +1,6 @@
+// Created by: Vitor Bispo
 
 #include "pacient.h"
-#include "file_list_functions.h"
 
 int main()
 {

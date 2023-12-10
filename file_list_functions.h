@@ -8,7 +8,6 @@
 #include <time.h>
 #include <string.h>
 #include <errno.h>
-#include <stdbool.h>
 
 enum BloodType {
     A, B, AB, O, UNDEFINED_BLOOD
