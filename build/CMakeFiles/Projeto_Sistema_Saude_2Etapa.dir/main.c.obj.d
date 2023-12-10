@@ -12,4 +12,4 @@ CMakeFiles/Projeto_Sistema_Saude_2Etapa.dir/main.c.obj: \
  c:\mingw\include\stdlib.h c:\mingw\include\math.h \
  c:\mingw\include\time.h c:\mingw\include\sys\types.h \
  c:\mingw\include\string.h c:\mingw\include\strings.h \
- c:\mingw\include\wchar.h
+ c:\mingw\include\wchar.h c:\mingw\include\errno.h

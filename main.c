@@ -1,6 +1,6 @@
-// Created by: Vitor Bispo
 
-#include "atendimento.h"
+#include "pacient.h"
+#include "file_list_functions.h"
 
 int main()
 {
@@ -42,6 +42,8 @@ int main()
         int choice;
         printf("Digite sua escolha: ");
         scanf("%d", &choice);
+        clearBuffer();
+
 
         switch (choice) {
             case 0:

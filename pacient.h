@@ -3,7 +3,6 @@
 
 #include "atendimento.h"
 
-
 void getRequiredInput(char *input, const char *fieldName, int maxLength);
 void addPatient(Patient **patients, int *numPatients);
 void removePatient(Patient **patients, int *numPatients, Appointment **appointments, int *numAppointments);

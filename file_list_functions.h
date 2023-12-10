@@ -8,6 +8,7 @@
 #include <time.h>
 #include <string.h>
 #include <errno.h>
+#include <stdbool.h>
 
 enum BloodType {
     A, B, AB, O, UNDEFINED_BLOOD
@@ -178,6 +179,7 @@ void removeAllAppointmentsOfAPatient(Appointment **appointments, int *numAppoint
             }
             *numAppointments -= 1;
             *appointments = (Appointment *) realloc(*appointments, *numAppointments * sizeof(Appointment));
+            i--;
         }
     }
 }

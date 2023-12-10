@@ -1,8 +1,6 @@
 #ifndef PROJETO_SISTEMA_SAUDE_2ETAPA_ATENDIMENTO_H
 #define PROJETO_SISTEMA_SAUDE_2ETAPA_ATENDIMENTO_H
 
-#include <stdbool.h>
-
 #include "file_list_functions.h"
 
 void addAppointment(Appointment **appointments, int *numAppointments, const Patient *patients, int numPatients);
