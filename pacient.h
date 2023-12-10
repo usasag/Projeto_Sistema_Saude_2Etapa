@@ -6,7 +6,7 @@
 
 void getRequiredInput(char *input, const char *fieldName, int maxLength);
 void addPatient(Patient **patients, int *numPatients);
-void removePatient(Patient **patients, int *numPatients);
+void removePatient(Patient **patients, int *numPatients, Appointment **appointments, int *numAppointments);
 void showAllPatientsWithSameBloodType(Patient *patients, int numPatients);
 void showAllPatientsSortedByName(Patient *patients, int numPatients);
 void bubbleSort(Patient *patients, int numPatients);
@@ -15,11 +15,9 @@ void editPatientInfo(Patient *patients, int numPatients);
 void listAllPatientsInfo(Patient *patients, int numPatients);
 void printOnePatientInfo(Patient *patients, int numPatients);
 
-int compareDates(const char *date1, const char *date2);
 bool checkIfPatientsExist(int numPatients);
 void clearBuffer();
 int generatePatientCode(Patient *patients, int numPatients);
-int findPatient(const Patient *patients, int numPatients, int code);
 
 
 void clearBuffer() {
@@ -28,19 +26,25 @@ void clearBuffer() {
 }
 
 int generatePatientCode(Patient *patients, int numPatients) {
-        if (numPatients == 0) {
-            return 1;
-        }
+    srand(time(NULL)); // Seeda o gerador de números aleatórios com o tempo atual
 
-        int maxCode = 0;
+    int newCode;
+    int unique;
+
+    do {
+        unique = 1;
+        newCode = rand() % 90000 + 10000; // Gerar um número aleatório entre 10000 e 99999
+
         for (int i = 0; i < numPatients; i++) {
-            if (patients[i].code > maxCode) {
-                maxCode = patients[i].code;
+            if (patients[i].code == newCode) {
+                unique = 0;
+                break;
             }
         }
+    } while (unique == 0);
 
-        return maxCode + 1;
-    }
+    return newCode;
+}
 
 bool checkIfPatientsExist(int numPatients) {
         if (numPatients == 0) {
@@ -51,17 +55,20 @@ bool checkIfPatientsExist(int numPatients) {
     }
 
 void getRequiredInput(char *input, const char *fieldName, int maxLength) {
-        do {
-            clearBuffer();
-            printf("Informe %s: ", fieldName);
-            scanf("%s", input);
+    do {
+        printf("Informe %s: ", fieldName);
+        fgets(input, maxLength, stdin);
 
-            if (strlen(input) == 0 || strlen(input) >= maxLength) {
-                printf("Esta informacao e obrigatoria, por favor informe %s.\n", fieldName);
-            }
-        } while (strlen(input) == 0 || strlen(input) >= maxLength);
-        clearBuffer();
-    }
+        // Remove the newline character from the input
+        input[strcspn(input, "\n")] = '\0';
+
+        if (strlen(input) == 0) {
+            printf("Esta informacao e obrigatoria, por favor informe %s.\n", fieldName);
+        } else if (strlen(input) >= maxLength - 1) {
+            printf("Limite de caracteres (%d) ultrapassado, verifique a informacao e tente novamente.\n", maxLength - 1);
+        }
+    } while (strlen(input) == 0 || strlen(input) >= maxLength - 1);
+}
 
 void addPatient(Patient **patients, int *numPatients) {
     // Alocar memória para novo paciente
@@ -73,18 +80,37 @@ void addPatient(Patient **patients, int *numPatients) {
     // Pegar nome do paciente
     getRequiredInput(newPatient->name, "nome do paciente*", 50);
 
+    // Pegar o genero do paciente
+    printf("Informe o genero biologico do paciente:\n"
+           "1. Masculino\n"
+           "2. Feminino\n"
+           "Digite qualquer outro numero caso nao informado...\n"
+    );
+    int genderInput;
+    scanf("%d", &genderInput);
+
+    switch (genderInput) {
+        case 1:
+            newPatient->gender = Male;
+            break;
+        case 2:
+            newPatient->gender = Female;
+            break;
+        default:
+            printf("Genero nao informado, informacao sera dada como indefinida.\n");
+            newPatient->gender = UNDEFINED_GENDER;
+            break;
+    }
+
     // Pegar RG do paciente
+    clearBuffer();
     printf("Informe o RG do paciente: ");
-fgets(newPatient->RG, sizeof(newPatient->RG), stdin);
-
-// Remove the newline character if it's present
-if (newPatient->RG[strlen(newPatient->RG) - 1] == '\n') {
-    newPatient->RG[strlen(newPatient->RG) - 1] = '\0';
-}
-
-if (strlen(newPatient->RG) == 0) {
-    printf("RG nao informado, informacao sera deixada em branco.\n");
-}
+    if (fgets(newPatient->RG, sizeof(newPatient->RG), stdin) != NULL) {
+        newPatient->RG[strcspn(newPatient->RG, "\n")] = '\0';
+    }
+    if (strlen(newPatient->RG) == 0) {
+        printf("RG nao informado, informacao sera deixada em branco.\n");
+    }
 
     // Pegar CPF do paciente
     do {
@@ -108,7 +134,8 @@ if (strlen(newPatient->RG) == 0) {
            "\n1. A"
            "\n2. B"
            "\n3. AB"
-           "\n4. O");
+           "\n4. O"
+           "\nDigite qualquer outro numero caso nao informado...\n");
     int bloodTypeInput;
     scanf("%d", &bloodTypeInput);
 
@@ -127,40 +154,47 @@ if (strlen(newPatient->RG) == 0) {
             break;
         default:
             printf("Tipo sanguineo nao informado, informacao sera deixada em branco.\n");
-            newPatient->bloodType = '\0';
+            newPatient->bloodType = UNDEFINED_BLOOD;
             break;
     }
+    clearBuffer();
 
     // Pegar fator RH
-    printf("Informe o Fator RH (+/-): ");
-    int rhFactorInput;
-    scanf("%d", &rhFactorInput);
+    if (newPatient->bloodType == UNDEFINED_BLOOD) {
+        printf("O tipo sanguineo e indefinido, logo o fator RH nao pode ser definido.\n");
+        newPatient->rhFactor = UNDEFINED_RH;
+    } else {
+        printf("Informe o Fator RH: \n"
+               "1. + (Positivo)\n"
+               "2. - (Negativo)\n"
+               "Digite qualquer outro numero caso nao informado...\n");
+        int rhFactorInput;
+        scanf("%d", &rhFactorInput);
 
-    switch (rhFactorInput) {
-        case 1:
-            newPatient->rhFactor = Positive;
-            break;
-        case 2:
-            newPatient->rhFactor = Negative;
-            break;
-        default:
-            printf("Fator RH nao informado, informacao sera deixada em branco.\n");
-            newPatient->rhFactor = '\0';
-            break;
+        switch (rhFactorInput) {
+            case 1:
+                newPatient->rhFactor = Positive;
+                break;
+            case 2:
+                newPatient->rhFactor = Negative;
+                break;
+            default:
+                printf("Fator RH nao informado, informacao sera deixada em branco.\n");
+                newPatient->rhFactor = UNDEFINED_RH;
+                break;
+        }
+        clearBuffer();
     }
 
     // Pegar o endereço do paciente
     printf("Informe o endereco do paciente: ");
-    fgets(newPatient->address, sizeof(newPatient->address), stdin);
-
-// Remove the newline character if it's present
-    if (newPatient->address[strlen(newPatient->address) - 1] == '\n') {
-        newPatient->address[strlen(newPatient->address) - 1] = '\0';
+    if (fgets(newPatient->address, sizeof(newPatient->address), stdin) != NULL) {
+        newPatient->address[strcspn(newPatient->address, "\n")] = '\0';
     }
-
     if (strlen(newPatient->address) == 0) {
         printf("Endereco nao informado, informacao sera deixada em branco.\n");
     }
+
     // Pegar a data de nascimento do paciente
     while (1) {
         getRequiredInput(newPatient->dob, "data de nascimento do paciente (dd/mm/aaaa)*", 11);
@@ -180,22 +214,12 @@ if (strlen(newPatient->RG) == 0) {
     printf("Paciente adicionado com sucesso.\n Codigo do paciente: %d\n", newPatient->code);
 }
 
-int findPatient(const Patient *patients, int numPatients, int code) {
-    // Procurar o paciente pelo código
-    for (int i = 0; i < numPatients; i++) {
-        if (patients[i].code == code) {
-            return i;
-        }
-    }
-    return -1;
-}
-
-void removePatient(Patient **patients, int *numPatients) {
+void removePatient(Patient **patients, int *numPatients, Appointment **appointments, int *numAppointments) {
     if (!checkIfPatientsExist(*numPatients))
     {
         printf("Nao existem pacientes cadastrados. Adicione um paciente e tente novamente.\n");
         return;
-    };
+    }
     // Pegar o código do paciente
     int code;
     printf("Informe o codigo do paciente: ");
@@ -203,7 +227,7 @@ void removePatient(Patient **patients, int *numPatients) {
 
     // Procurar o paciente pelo código
     int index = findPatient(*patients, *numPatients, code);
-   
+
     // Se não encontrar, mostrar mensagem de erro e retornar
     if (index == -1) {
         printf("Paciente nao encontrado.\n");
@@ -220,18 +244,19 @@ void removePatient(Patient **patients, int *numPatients) {
     (*numPatients)--;
 
     // Remover consultas do paciente
-    removeAllAppointmentsOfAPatient(&appointments, &numAppointments, code);
+    removeAllAppointmentsOfAPatient(appointments, numAppointments, code);
 
     // Mostrar mensagem de sucesso
     printf("Paciente removido com sucesso.\n");
 }
 
 void editPatientInfo(Patient *patients, int numPatients) {
+    char newCPF[12];
     if (!checkIfPatientsExist(numPatients))
     {
         printf("Nao existem pacientes cadastrados. Adicione um paciente e tente novamente.\n");
         return;
-    };
+    }
     // Pegar o código do paciente
     int code;
     printf("Informe o codigo do paciente: ");
@@ -249,17 +274,19 @@ void editPatientInfo(Patient *patients, int numPatients) {
     int field;
     do {
         // Se encontrar, pegar a informação que deseja editar
-        printf("Informe o campo que deseja editar: "
-               "\n1. Nome"
-               "\n2. RG"
-               "\n3. CPF"
-               "\n4. Tipo sanguineo"
-               "\n5. Fator RH"
-               "\n6. Endereco"
-               "\n7. Data de nascimento"
-               "\nEnter para sair da edicao..."
-               "\n");
+        printf("Informe o campo que deseja editar: ");
+        printf("\n1. Nome: %s", patients[index].name);
+        printf("\n2. Genero: %s", genderStrings[patients[index].gender]);
+        printf("\n3. RG: %s", patients[index].RG);
+        printf("\n4. CPF: %s", patients[index].CPF);
+        printf("\n5. Tipo sanguineo: %s", bloodTypeStrings[patients[index].bloodType]);
+        printf("\n6. Fator RH: %s", rhFactorStrings[patients[index].rhFactor]);
+        printf("\n7. Endereco: %s", patients[index].address);
+        printf("\n8. Data de nascimento: %s", patients[index].dob);
+        printf("\n0. Sair da edicao...");
+        printf("\n");
         scanf("%d", &field);
+        clearBuffer();
 
         // Pegar a nova informação
         switch (field) {
@@ -267,18 +294,62 @@ void editPatientInfo(Patient *patients, int numPatients) {
                 getRequiredInput(patients[index].name, "nome do paciente", 50);
                 break;
             case 2:
-                getRequiredInput(patients[index].RG, "RG do paciente", 15);
+                printf("Informe o genero do paciente:\n"
+                  "1. Masculino\n"
+                   "2. Feminino\n"
+                   "\nDigite qualquer outro numero caso nao informado...\n"
+                );
+                int genderInput;
+                scanf("%d", &genderInput);
+
+                switch (genderInput) {
+                    case 1:
+                        patients[index].gender = Male;
+                        break;
+                    case 2:
+                        patients[index].gender = Female;
+                        break;
+                    default:
+                        printf("Genero nao informado, informacao sera dada como indefinida.\n");
+                        patients[index].gender = UNDEFINED_GENDER;
+                        break;
+                }
                 break;
             case 3:
-                getRequiredInput(patients[index].CPF, "CPF do paciente", 12);
+                printf("Informe o RG do paciente: ");
+                fgets(patients->RG, sizeof(patients[index].RG), stdin);
+
+// Remover o caractere de nova linha do final da string se estiver presente
+                if (patients[index].RG[strlen(patients[index].RG) - 1] == '\n') {
+                    patients[index].RG[strlen(patients[index].RG) - 1] = '\0';
+                }
                 break;
             case 4:
+                getRequiredInput(newCPF, "CPF do paciente", 12);
+
+                // Checar CPF duplicado
+                int duplicateCPF = 0;
+                for (int i = 0; i < numPatients; i++) {
+                    if (i != index && strcmp(newCPF, patients[i].CPF) == 0) {
+                        duplicateCPF = 1;
+                        break;
+                    }
+                }
+
+                if (duplicateCPF) {
+                    printf("CPF ja existe. Nao foi possivel editar o CPF do paciente.\n");
+                    break;
+                } else {
+                    strcpy(patients[index].CPF, newCPF);
+                    break;
+                }
+            case 5:
                 printf("Informe o tipo sanguineo do paciente"
                        "\n1. A"
                        "\n2. B"
                        "\n3. AB"
                        "\n4. O"
-                       "\n");
+                       "\nDigite qualquer outro numero caso nao informado...\n");
                 int bloodTypeInput;
                 scanf("%d", &bloodTypeInput);
 
@@ -296,35 +367,49 @@ void editPatientInfo(Patient *patients, int numPatients) {
                         patients[index].bloodType = O;
                         break;
                     default:
-                        printf("Tipo sanguineo nao informado, informacao sera deixada em branco.\n");
-                        break;
-                }
-                break;
-            case 5:
-                printf("Informe o tipo sanguineo do paciente: ");
-                int rhFactorInput;
-                scanf("%d", &rhFactorInput);
-
-                switch (rhFactorInput) {
-                    case 1:
-                        patients[index].rhFactor = Positive;
-                        break;
-                    case 2:
-                        patients[index].rhFactor = Negative;
-                        break;
-                    default:
-                        printf("Fator RH nao informado, informacao sera deixada em branco.\n");
+                        printf("Opcao invalida, tipo sanguineo nao informado, informacao dada como indefinida.\n");
+                        patients[index].bloodType = UNDEFINED_BLOOD;
+                        patients[index].rhFactor = UNDEFINED_RH;
                         break;
                 }
                 break;
             case 6:
-                printf("Informe o endereço do paciente: ");
-                scanf("%s", patients[index].address);
-                if (strlen(patients[index].address) == 0) {
-                    printf("Endereco nao informado, informacao sera deixada em branco.\n");
+                if (patients[index].bloodType == UNDEFINED_BLOOD) {
+                    printf("O tipo sanguineo nao foi informado, logo o fator RH nao pode ser definido.\n");
+                    patients[index].rhFactor = UNDEFINED_RH;
+                    break;
+                } else {
+                    printf("Informe o fator RH do paciente:\n"
+                           "1. + (Positivo)\n"
+                           "2. - (Negativo)\n"
+                    );
+                    int rhFactorInput;
+                    scanf("%d", &rhFactorInput);
+
+                    switch (rhFactorInput) {
+                        case 1:
+                            patients[index].rhFactor = Positive;
+                            break;
+                        case 2:
+                            patients[index].rhFactor = Negative;
+                            break;
+                        default:
+                            printf("Fator RH nao informado, informacao sera dada como indefinida.\n");
+                            patients[index].rhFactor = UNDEFINED_RH;
+                            break;
+                    }
                 }
                 break;
             case 7:
+                    printf("Informe o endereco do paciente: ");
+                    if (fgets(patients[index].address, sizeof(patients[index].address), stdin) != NULL) {
+                        patients[index].address[strcspn(patients[index].address, "\n")] = '\0';
+                    }
+                    if (strlen(patients[index].address) == 0) {
+                        printf("Endereco nao informado, informacao sera deixada em branco.\n");
+                    }
+                break;
+            case 8:
                 do {
                     getRequiredInput(patients[index].dob, "data de nascimento do paciente (dd/mm/aaaa)*", 11);
                     if (!isValidDate(patients[index].dob)) {
@@ -339,9 +424,6 @@ void editPatientInfo(Patient *patients, int numPatients) {
                 break;
         }
     } while (field != 0);
-
-    // Mostrar mensagem de sucesso
-    printf("Paciente editado com sucesso.\n");
 }
 
 void listAllPatientsInfo(Patient *patients, int numPatients) {
@@ -349,14 +431,13 @@ void listAllPatientsInfo(Patient *patients, int numPatients) {
     {
         printf("Nao existem pacientes cadastrados. Adicione um paciente e tente novamente.\n");
         return;
-    };
-    printf("\n-----------------\n"); // Divisor
+    }
+    printf("-----------------\n"); // Divisor
     for (int i = 0; i < numPatients; i++) {
         printf("Codigo: %d\n", patients[i].code);
         printf("Nome: %s\n", patients[i].name);
-        printf("CPF: %s\n", patients[i].CPF);
         printf("Data de nascimento: %s\n", patients[i].dob);
-        printf("\n-----------------\n"); // Divisor
+        printf("-----------------\n"); // Divisor
     }
 }
 
@@ -365,7 +446,7 @@ void printOnePatientInfo(Patient *patients, int numPatients) {
     {
         printf("Nao existem pacientes cadastrados. Adicione um paciente e tente novamente.\n");
         return;
-    };
+    }
     // Pegar o código do paciente
     int code;
     printf("Informe o codigo do paciente: ");
@@ -383,10 +464,11 @@ void printOnePatientInfo(Patient *patients, int numPatients) {
     // Se encontrar, mostrar as informações do paciente
     printf("Codigo: %d\n", patients[index].code);
     printf("Nome: %s\n", patients[index].name);
+    printf("Genero: %s\n", genderStrings[patients[index].gender]);
     printf("RG: %s\n", patients[index].RG);
     printf("CPF: %s\n", patients[index].CPF);
-    printf("Tipo sanguineo: %d\n", patients[index].bloodType);
-    printf("Fator RH: %d\n", patients[index].rhFactor);
+    printf("Tipo sanguineo: %s\n", bloodTypeStrings[patients[index].bloodType]);
+    printf("Fator RH: %s\n", rhFactorStrings[patients[index].rhFactor]);
     printf("Endereco: %s\n", patients[index].address);
     printf("Data de nascimento: %s\n", patients[index].dob);
     printf("\n");
@@ -397,13 +479,13 @@ void showAllPatientsWithSameBloodType(Patient *patients, int numPatients) {
     {
         printf("Nao existem pacientes cadastrados. Adicione um paciente e tente novamente.\n");
         return;
-    };
+    }
     // Pegar o tipo sanguíneo
     printf("Informe o tipo sanguineo a ser procurado"
-           "\n1. A"
-           "\n2. B"
-           "\n3. AB"
-           "\n4. O"
+           "\n0. A"
+           "\n1. B"
+           "\n2. AB"
+           "\n3. O"
            "\n");
     int bloodTypeInput;
     scanf("%d", &bloodTypeInput);
@@ -438,17 +520,18 @@ void showAllPatientsSortedByName(Patient *patients, int numPatients) {
     {
         printf("Nao existem pacientes cadastrados. Adicione um paciente e tente novamente.\n");
         return;
-    };
+    }
     bubbleSort(patients, numPatients);
     listAllPatientsInfo(patients, numPatients);
 }
 
+// TODO A função está funcionando, mas é necessário verificar se existem pacientes e consultas, caso contrário, retornar uma mensagem de erro
 void showPatientsWithAppointmentsInADay(Patient *patients, int numPatients, Appointment *appointments, int numAppointments) {
     if (!checkIfPatientsExist(numPatients))
     {
         printf("Nao existem pacientes cadastrados. Adicione um paciente e tente novamente.\n");
         return;
-    };
+    }
     // Pegar a data
     char date[11];
     getRequiredInput(date, "data (dd/mm/aaaa)", 11);

@@ -17,7 +17,17 @@ void showAllAppointmentsSortedByDecrescentDate(const Appointment *appointments, 
 
 int generateAppointmentCode(const Appointment *appointments, int numAppointments);
 int findAppointment(const Appointment *appointments, int numAppointments, int code);
+bool hasAppointmentOnDate(const Appointment *appointments, int numAppointments, int patientCode, const char *date);
 bool checkIfAppointmentsExist(int numAppointments);
+
+bool hasAppointmentOnDate(const Appointment *appointments, int numAppointments, int patientCode, const char *date) {
+    for (int i = 0; i < numAppointments; i++) {
+        if (appointments[i].patientCode == patientCode && strcmp(appointments[i].date, date) == 0) {
+            return true;
+        }
+    }
+    return false;
+}
 
 bool checkIfAppointmentsExist(int numAppointments) {
     if (numAppointments == 0) {
@@ -73,16 +83,21 @@ void addAppointment(Appointment **appointments, int *numAppointments, const Pati
     }
     } while (appointment.appointmentType != Consulta && appointment.appointmentType != Retorno);
     
+    char tempDate[11];
     do {
         printf("Digite a data da consulta (dd/mm/aaaa): ");
-        scanf("%s", appointment.date);
-        if (!isValidDate(appointment.date)) {
+        scanf("%s", tempDate);
+        if (!isValidDate(tempDate)) {
             printf("Data invalida! Por favor digite uma data valida!\n"
                  "Formato: (dd/mm/aaaa)\n"
                  "Exemplo: 01/01/2000\n");
+        } else if (hasAppointmentOnDate(*appointments, *numAppointments, appointment.patientCode, tempDate)) {
+            printf("O paciente ja possui uma consulta agendada para essa data! Por favor, escolha outra data.\n");
+        } else {
+            strcpy(appointment.date, tempDate);
+            appointment.status = Agendado;
         }
-    } while (!isValidDate(appointment.date));
-    appointment.status = Agendado;
+    } while (!isValidDate(tempDate) || hasAppointmentOnDate(*appointments, *numAppointments, appointment.patientCode, tempDate));
 
     printf("Digite o preco da consulta: ");
     scanf("%f", &appointment.price);
@@ -140,36 +155,59 @@ void editAppointment(Appointment *appointments, int numAppointments) {
     }
 
     int choice;
-    printf("Selecione qual informacao deseja alterar:\n");
-    printf("1. Tipo de consulta\n");
-    printf("2. Data da consulta\n");
-    printf("3. Preco da consulta\n");
-    printf("--------------------\n");
-    printf("0. Cancelar\n\n");
-    printf("Digite sua escolha: ");
-    scanf("%d", &choice);
+    int exitEditing = 0;
 
-    switch (choice) {
-        case 1:
-            printf("Digite o novo tipo de consulta (0 - Consulta, 1 - Retorno): ");
-            scanf("%d", &appointments[index].appointmentType);
-            break;
-        case 2:
-            printf("Digite a nova data da consulta (dd/mm/aaaa): ");
-            scanf("%s", appointments[index].date);
-            break;
-        case 3:
-            printf("Digite o novo preco da consulta: ");
-            scanf("%f", &appointments[index].price);
-            break;
-        default:
-            printf("Saindo...\n");
-            return;
-    }
+    do {
+        printf("Selecione qual informacao deseja alterar:\n");
+        printf("1. Tipo de consulta: %s\n", appointmentTypeStrings[appointments[index].appointmentType]);
+        printf("2. Data da consulta: %s\n", appointments[index].date);
+        printf("3. Preco da consulta: %f\n", appointments[index].price);
+        printf("4. Status: %s\n", statusStrings[appointments[index].status]);
+        printf("--------------------\n");
+        printf("0. Sair da edicao...\n\n");
+        printf("Digite sua escolha: ");
+        scanf("%d", &choice);
 
+        switch (choice) {
+            case 1:
+                printf("Selecione o novo tipo de consulta:\n");
+                printf("0. Consulta\n");
+                printf("1. Retorno\n");
+                scanf("%d", &appointments[index].appointmentType);
+                break;
+            case 2:
+                printf("Digite a nova data da consulta (dd/mm/aaaa): ");
+                scanf("%s", appointments[index].date);
+
+                // Verifica se a nova data entra em conflito com outros atendimentos do mesmo paciente
+                for (int i = 0; i < numAppointments; i++) {
+                    if (i != index && appointments[i].patientCode == appointments[index].patientCode &&
+                        strcmp(appointments[i].date, appointments[index].date) == 0) {
+                        printf("A data da consulta conflita com outro atendimento do mesmo paciente. Por favor, escolha uma data diferente.\n");
+                        break;
+                    }
+                }
+                break;
+            case 3:
+                printf("Digite o novo preco da consulta: ");
+                scanf("%f", &appointments[index].price);
+                break;
+            case 4:
+                printf("Selecione o novo status:\n");
+                printf("0. Agendado\n");
+                printf("1. Atendendo\n");
+                printf("2. Finalizado\n");
+                printf("3. Cancelado\n");
+                scanf("%d", &appointments[index].status);
+                break;
+            default:
+                printf("Saindo...\n");
+                exitEditing = 1;
+                break;
+        }
+    } while (!exitEditing);
     printf("Atendimento editado com sucesso!\n");
 }
-
 void showAppointmentsForAPatient(const Appointment *appointments, int numAppointments) {
     if(!checkIfAppointmentsExist(numAppointments)) {
         printf("Nao existem atendimentos cadastrados! Adicione algum atendimento e tente novamente.\n");
@@ -182,7 +220,7 @@ void showAppointmentsForAPatient(const Appointment *appointments, int numAppoint
     printf("Codigo\tCodigo do Paciente\tTipo de Consulta\tData\tStatus\tPreco\n");
     for (int i = 0; i < numAppointments; i++) {
         if (appointments[i].patientCode == patientCode) {
-            printf("%d\t%d\t%d\t%s\t%d\t%.2f\n", appointments[i].code, appointments[i].patientCode, appointments[i].appointmentType, appointments[i].date, appointments[i].status, appointments[i].price);
+            printf("%d\t%d\t%s\t%s\t%s\t%.2f\n", appointments[i].code, appointments[i].patientCode, appointmentTypeStrings[appointments[i].appointmentType], appointments[i].date, statusStrings[appointments[i].status], appointments[i].price);
         }
     }
 }
@@ -272,7 +310,7 @@ void showAllAppointmentsSortedByDecrescentDate(const Appointment *appointments, 
 
     printf("Codigo\tCodigo do Paciente\tTipo de Consulta\tData\tStatus\tPreco\n");
     for (int i = 0; i < numAppointments; i++) {
-        printf("%d\t%d\t%d\t%s\t%d\t%.2f\n", sortedAppointments[i].code, sortedAppointments[i].patientCode, sortedAppointments[i].appointmentType, sortedAppointments[i].date, sortedAppointments[i].status, sortedAppointments[i].price);
+        printf("%d\t%d\t%s\t%s\t%s\t%.2f\n", sortedAppointments[i].code, sortedAppointments[i].patientCode, appointmentTypeStrings[sortedAppointments[i].appointmentType], sortedAppointments[i].date, statusStrings[sortedAppointments[i].status], sortedAppointments[i].price);
     }
     free(sortedAppointments);
 }
@@ -284,7 +322,7 @@ void showSumOfAppointmentPricesInADay(const Appointment *appointments, int numAp
     }
     char date[11];
     printf("Digite a data: ");
-    scanf("%s", date);
+    scanf("%s", date); // Needs to be corrected to validate the date before showing the sum
 
     float sum = 0;
     for (int i = 0; i < numAppointments; i++) {

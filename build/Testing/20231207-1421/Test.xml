@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Site BuildName="(empty)"
+	BuildStamp="20231207-1421-Experimental"
+	Name="(empty)"
+	Generator="ctest-3.28.0-rc5"
+	CompilerName=""
+	CompilerVersion=""
+	OSName="Windows"
+	Hostname="Jorge"
+	OSRelease=" Personal"
+	OSVersion=" (Build 22631)"
+	OSPlatform="AMD64"
+	Is64Bits="1"
+	VendorString="GenuineIntel"
+	VendorID="Intel Corporation"
+	FamilyID="6"
+	ModelID="14"
+	ProcessorCacheSize="-1"
+	NumberOfLogicalCPU="4"
+	NumberOfPhysicalCPU="2"
+	TotalVirtualMemory="16131"
+	TotalPhysicalMemory="12163"
+	LogicalProcessorsPerPhysical="2"
+	ProcessorClockFrequency="2208"
+	>
+	<Testing>
+		<StartDateTime>Dec 07 11:21 Hora Padr[NON-UTF-8-BYTE-0xE3]o de Buenos Aires</StartDateTime>
+		<StartTestTime>1701958907</StartTestTime>
+		<TestList/>
+		<EndDateTime>Dec 07 11:21 Hora Padr[NON-UTF-8-BYTE-0xE3]o de Buenos Aires</EndDateTime>
+		<EndTestTime>1701958907</EndTestTime>
+		<ElapsedMinutes>0</ElapsedMinutes>
+	</Testing>
+</Site>

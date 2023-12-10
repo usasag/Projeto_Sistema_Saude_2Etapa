@@ -2,7 +2,6 @@ CMakeFiles/Projeto_Sistema_Saude_2Etapa.dir/main.c.obj: \
  C:\Users\jorge\OneDrive\Documentos\GitHub\Projeto_Sistema_Saude_2Etapa\main.c \
  C:\Users\jorge\OneDrive\Documentos\GitHub\Projeto_Sistema_Saude_2Etapa\atendimento.h \
  c:\mingw\lib\gcc\mingw32\6.3.0\include\stdbool.h \
- C:\Users\jorge\OneDrive\Documentos\GitHub\Projeto_Sistema_Saude_2Etapa\pacient.h \
  C:\Users\jorge\OneDrive\Documentos\GitHub\Projeto_Sistema_Saude_2Etapa\file_list_functions.h \
  c:\mingw\include\stdio.h c:\mingw\include\_mingw.h \
  c:\mingw\include\msvcrtver.h c:\mingw\include\w32api.h \

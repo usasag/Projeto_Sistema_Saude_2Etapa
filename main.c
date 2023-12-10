@@ -45,7 +45,8 @@ int main()
 
         switch (choice) {
             case 0:
-                writeInfoInFile(patients, numPatients);
+                writePatientInfoInFile(patients, numPatients);
+                writeAppointmentInfoInFile(appointments, numAppointments);
                 printf("Salvando informacoes em arquivo e saindo...\n");
                 free(patients);
                 free(appointments);                
@@ -54,7 +55,7 @@ int main()
                addPatient(&patients,&numPatients);
                 break;
             case 2:
-               removePatient(&patients, &numPatients);
+               removePatient(&patients, &numPatients, &appointments, &numAppointments);
                 break;
             case 3:
                 editPatientInfo(patients, numPatients);
